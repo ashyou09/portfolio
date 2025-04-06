@@ -1,0 +1,230 @@
+/**
+ * Skills Section Styles
+ * 
+ * This file contains styles for the Skills section, including:
+ * - Tab navigation for skill categories
+ * - Skill cards with level indicators
+ * - Grid layout for skills display
+ * - Responsive adjustments
+ */
+
+/* Skills Container */
+.skills-container {
+  width: 100%;
+}
+
+/* Category Tabs */
+.skills-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.skills-tab {
+  padding: 0.8rem 1.5rem;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.skills-tab:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.skills-tab.active {
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+  box-shadow: 0 4px 10px rgba(71, 118, 230, 0.2);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .skills-tab {
+    background-color: #343a40;
+    color: #e9ecef;
+  }
+  
+  .skills-tab:hover {
+    background-color: #495057;
+  }
+}
+
+/* Skills Grid */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Skill Card */
+.skill-card {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .skill-card {
+    background-color: #212529;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .skill-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Skill Icon */
+.skill-icon {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+  border-radius: 10px;
+  margin-right: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.skill-icon-placeholder {
+  text-transform: uppercase;
+}
+
+/* Skill Details */
+.skill-details {
+  flex: 1;
+}
+
+/* Skill Name */
+.skill-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #343a40;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skill-name {
+    color: #e9ecef;
+  }
+}
+
+/* Skill Level Container */
+.skill-level-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Skill Level Bar */
+.skill-level-bar {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Skill Level Fill */
+.skill-level-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  border-radius: 4px;
+  transition: width 1s ease-in-out;
+}
+
+/* Skill Level Label */
+.skill-level-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  align-self: flex-end;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skill-level-bar {
+    background-color: #495057;
+  }
+  
+  .skill-level-label {
+    color: #adb5bd;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .skills-tab {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .skill-card {
+    padding: 1.2rem;
+  }
+  
+  .skill-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .skill-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .skills-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .skills-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .skill-card {
+    padding: 1rem;
+  }
+  
+  .skill-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.2rem;
+  }
+}

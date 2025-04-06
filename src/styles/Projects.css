@@ -1,0 +1,301 @@
+/**
+ * Projects Section Styles
+ * 
+ * This file contains styles for the Projects section, including:
+ * - Filter buttons
+ * - Project cards with hover effects
+ * - Project details and technologies
+ * - Featured project indicators
+ * - Responsive grid layout
+ */
+
+/* Projects Container */
+.projects-container {
+  width: 100%;
+}
+
+/* Filter Buttons */
+.projects-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.project-filter {
+  padding: 0.7rem 1.5rem;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-filter:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.project-filter.active {
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+  box-shadow: 0 4px 10px rgba(71, 118, 230, 0.2);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .project-filter {
+    background-color: #343a40;
+    color: #e9ecef;
+  }
+  
+  .project-filter:hover {
+    background-color: #495057;
+  }
+}
+
+/* Projects Grid */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+/* Project Card */
+.project-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .project-card {
+    background-color: #212529;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .project-card:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Project Image Container */
+.project-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+/* Project Image */
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-image {
+  transform: scale(1.05);
+}
+
+/* Project Links Overlay */
+.project-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-links {
+  opacity: 1;
+}
+
+/* Project Link Button */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6em 1.2em;
+  background-color: #ffffff;
+  color: #343a40;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.project-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.project-link.github {
+  background-color: #333333;
+  color: white;
+}
+
+.project-link.live {
+  background-color: #4776E6;
+  color: white;
+}
+
+/* Featured Badge */
+.project-featured-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.3em 0.8em;
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Project Details */
+.project-details {
+  padding: 1.5rem;
+}
+
+/* Project Title */
+.project-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+@media (prefers-color-scheme: dark) {
+  .project-title {
+    color: #e9ecef;
+  }
+}
+
+/* Project Technologies */
+.project-technologies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.project-technology {
+  background-color: #f1f3f5;
+  color: #495057;
+  padding: 0.3em 0.7em;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .project-technology {
+    background-color: #343a40;
+    color: #e9ecef;
+  }
+}
+
+/* Project Description */
+.project-description {
+  margin-bottom: 1.5rem;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .project-description {
+    color: #adb5bd;
+  }
+}
+
+/* Project Actions */
+.project-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* No Projects Message */
+.no-projects {
+  text-align: center;
+  padding: 3rem 0;
+  color: #6c757d;
+}
+
+@media (prefers-color-scheme: dark) {
+  .no-projects {
+    color: #adb5bd;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .project-filter {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
+  .project-title {
+    font-size: 1.2rem;
+  }
+  
+  .project-details {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-filters {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  
+  .project-filter {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .project-image-container {
+    height: 180px;
+  }
+  
+  .project-actions {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,185 @@
+/**
+ * Button Component Styles
+ * 
+ * This file contains styles for the Button component, including:
+ * - Base button styles
+ * - Button types (primary, secondary, outline, text)
+ * - Button sizes (small, medium, large)
+ * - Button states (hover, focus, active, disabled)
+ * - Full width option
+ */
+
+/* Base Button Styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Button Types */
+
+/* Primary Button */
+.button-primary {
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  color: white;
+  border: none;
+}
+
+.button-primary:hover {
+  background: linear-gradient(90deg, #3a67d4 0%, #7e48d6 100%);
+  box-shadow: 0 4px 12px rgba(71, 118, 230, 0.3);
+  transform: translateY(-2px);
+}
+
+.button-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(71, 118, 230, 0.3);
+}
+
+/* Secondary Button */
+.button-secondary {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.button-secondary:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.button-secondary:active {
+  transform: translateY(0);
+  background-color: #e2e6ea;
+}
+
+/* Outline Button */
+.button-outline {
+  background-color: transparent;
+  color: #4776E6;
+  border: 2px solid #4776E6;
+}
+
+.button-outline:hover {
+  background-color: rgba(71, 118, 230, 0.05);
+  box-shadow: 0 2px 8px rgba(71, 118, 230, 0.2);
+  transform: translateY(-2px);
+}
+
+.button-outline:active {
+  transform: translateY(0);
+  background-color: rgba(71, 118, 230, 0.1);
+}
+
+/* Text Button */
+.button-text {
+  background-color: transparent;
+  color: #4776E6;
+  border: none;
+  padding: 0.5em 0.75em;
+}
+
+.button-text:hover {
+  background-color: rgba(71, 118, 230, 0.05);
+  text-decoration: underline;
+}
+
+.button-text:active {
+  background-color: rgba(71, 118, 230, 0.1);
+}
+
+/* Button Sizes */
+
+/* Small Button */
+.button-small {
+  font-size: 0.875rem;
+  padding: 0.4em 0.8em;
+  height: 32px;
+}
+
+/* Medium Button (Default) */
+.button-medium {
+  font-size: 1rem;
+  padding: 0.6em 1.2em;
+  height: 40px;
+}
+
+/* Large Button */
+.button-large {
+  font-size: 1.125rem;
+  padding: 0.8em 1.6em;
+  height: 48px;
+}
+
+/* Full Width Button */
+.button-full-width {
+  width: 100%;
+  display: flex;
+}
+
+/* Disabled State */
+.button-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.button-disabled:hover,
+.button-disabled:active {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Focus State */
+.button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.4);
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .button-secondary {
+    background-color: #343a40;
+    color: #e9ecef;
+    border-color: #495057;
+  }
+  
+  .button-secondary:hover {
+    background-color: #495057;
+    border-color: #6c757d;
+  }
+  
+  .button-secondary:active {
+    background-color: #495057;
+  }
+  
+  .button-outline {
+    color: #8E54E9;
+    border-color: #8E54E9;
+  }
+  
+  .button-outline:hover {
+    background-color: rgba(142, 84, 233, 0.1);
+  }
+  
+  .button-text {
+    color: #8E54E9;
+  }
+  
+  .button-text:hover {
+    background-color: rgba(142, 84, 233, 0.1);
+  }
+}
