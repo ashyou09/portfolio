@@ -21,17 +21,17 @@ function Hero() {
   // State for animated typing effect
   const [displayText, setDisplayText] = useState('');
   const [isTypingComplete, setIsTypingComplete] = useState(false);
-  
+
   // Text to be typed
   const textToType = personalInfo.title;
-  
+
   /**
    * Animated typing effect for the title
    */
   useEffect(() => {
     let currentIndex = 0;
     let typingInterval;
-    
+
     // Start typing effect
     const startTyping = () => {
       typingInterval = setInterval(() => {
@@ -44,33 +44,33 @@ function Hero() {
         }
       }, 100); // Adjust speed as needed
     };
-    
+
     // Start typing after a short delay
     const initialDelay = setTimeout(() => {
       startTyping();
     }, 500);
-    
+
     // Clean up intervals on component unmount
     return () => {
       clearTimeout(initialDelay);
       clearInterval(typingInterval);
     };
   }, [textToType]);
-  
+
   return (
     <section id="home" className="hero">
       <div className="hero-background">
         <div className="hero-overlay"></div>
       </div>
-      
+
       <div className="hero-content">
         <div className="hero-text-container">
           {/* Greeting */}
           <p className="hero-greeting">Hello, I'm</p>
-          
+
           {/* Name */}
           <h1 className="hero-name">{personalInfo.name}</h1>
-          
+
           {/* Animated Title */}
           <div className="hero-title-container">
             <h2 className="hero-title">
@@ -78,10 +78,10 @@ function Hero() {
               <span className={`hero-cursor ${isTypingComplete ? 'blink' : ''}`}>|</span>
             </h2>
           </div>
-          
+
           {/* Short Bio */}
           <p className="hero-bio">{personalInfo.bio}</p>
-          
+
           {/* Call-to-Action Buttons */}
           <div className="hero-buttons">
             <Button href="#projects" type="primary" size="large">
@@ -91,7 +91,7 @@ function Hero() {
               Contact Me
             </Button>
           </div>
-          
+
           {/* Scroll Down Indicator */}
           <div className="scroll-indicator">
             <a href="#about" aria-label="Scroll to About section">

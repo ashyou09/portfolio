@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Section from '../components/Section';
 import Button from '../components/Button';
-import TiltCard from '../components/TiltCard';
+
 import projects from '../data/projects';
 import '../styles/Projects.css';
 
@@ -21,7 +21,7 @@ import '../styles/Projects.css';
  */
 function Projects() {
   // State for active filter
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState('featured');
 
   /**
    * Filter projects based on active filter
@@ -71,7 +71,7 @@ function Projects() {
         {/* Projects Grid */}
         <div className="projects-grid">
           {filteredProjects.map((project) => (
-            <TiltCard key={project.id} className="project-card-wrapper">
+            <div key={project.id} className="project-card-wrapper">
               <div className="project-card">
                 {/* Project Image */}
                 <div className="project-image-container">
@@ -104,9 +104,9 @@ function Projects() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="project-link live"
-                        aria-label="View Live Demo"
+                        aria-label="View Certificate/Demo"
                       >
-                        Live Demo
+                        {project.id === 'ml-specialization' ? 'Verify' : 'Live Demo'}
                       </a>
                     )}
                   </div>
@@ -154,13 +154,13 @@ function Projects() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Live Demo
+                        {project.id === 'ml-specialization' ? 'Verify Credential' : 'Live Demo'}
                       </Button>
                     )}
                   </div>
                 </div>
               </div>
-            </TiltCard>
+            </div>
           ))}
         </div>
 

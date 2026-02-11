@@ -12,6 +12,8 @@
 /* Projects Container */
 .projects-container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Filter Buttons */
@@ -19,74 +21,95 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  /* Safety for small screens */
 }
 
 .project-filter {
-  padding: 0.7rem 1.5rem;
-  background-color: #f8f9fa;
-  border: none;
-  border-radius: 30px;
+  padding: 0.8rem 1.8rem;
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 50px;
+  /* Pill shape */
   font-size: 1rem;
   font-weight: 500;
-  color: #495057;
+  color: #6c757d;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
 }
 
 .project-filter:hover {
-  background-color: #e9ecef;
+  background-color: #f8f9fa;
   transform: translateY(-2px);
+  color: #495057;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .project-filter.active {
-  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
   color: white;
-  box-shadow: 0 4px 10px rgba(71, 118, 230, 0.2);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(71, 118, 230, 0.3);
 }
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
   .project-filter {
+    background-color: #2b3035;
+    /* Darker than body */
+    border-color: #343a40;
+    color: #adb5bd;
+  }
+
+  .project-filter:hover {
     background-color: #343a40;
     color: #e9ecef;
-  }
-  
-  .project-filter:hover {
-    background-color: #495057;
   }
 }
 
 /* Projects Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2.5rem;
+  padding: 1rem 0;
+  /* Space for hover shadows */
 }
 
 /* Project Card */
 .project-card {
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s ease;
+  height: 100%;
+  /* Full height of grid cell */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
+/* Hover effect is handled by TiltCard usually, but purely css fallback: */
 .project-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
   .project-card {
-    background-color: #212529;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #1a1d20;
+    /* Darker card bg */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
+
   .project-card:hover {
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -94,7 +117,8 @@
 .project-image-container {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 220px;
+  /* Slightly taller */
   overflow: hidden;
 }
 
@@ -103,11 +127,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .project-card:hover .project-image {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 /* Project Links Overlay */
@@ -117,7 +141,10 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
+  /* Slightly lighter overlay */
+  backdrop-filter: blur(3px);
+  /* Glassmorphism blur */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,28 +162,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6em 1.2em;
-  background-color: #ffffff;
+  padding: 0.8em 1.5em;
+  background-color: rgba(255, 255, 255, 0.9);
   color: #343a40;
-  border-radius: 4px;
-  font-weight: 500;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
   text-decoration: none;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .project-link:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.project-link.github {
-  background-color: #333333;
-  color: white;
+.project-link.github:hover {
+  color: #333;
+  /* Keep dark on hover */
 }
 
 .project-link.live {
-  background-color: #4776E6;
+  background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
   color: white;
+}
+
+.project-link.live:hover {
+  filter: brightness(1.1);
 }
 
 /* Featured Badge */
@@ -164,31 +198,39 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  padding: 0.3em 0.8em;
-  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 500;
-  border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 0.4em 1em;
+  background: rgba(255, 255, 255, 0.95);
+  color: #e64747;
+  /* Pops against images */
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
 /* Project Details */
 .project-details {
-  padding: 1.5rem;
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 /* Project Title */
 .project-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
   color: #343a40;
+  line-height: 1.3;
 }
 
 @media (prefers-color-scheme: dark) {
   .project-title {
-    color: #e9ecef;
+    color: #f1f3f5;
   }
 }
 
@@ -196,21 +238,33 @@
 .project-technologies {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
 }
 
 .project-technology {
   background-color: #f1f3f5;
   color: #495057;
-  padding: 0.3em 0.7em;
-  border-radius: 20px;
+  padding: 0.4em 0.9em;
+  border-radius: 8px;
+  /* Softer rect */
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.project-technology:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
 }
 
 @media (prefers-color-scheme: dark) {
   .project-technology {
+    background-color: #2b3035;
+    color: #ced4da;
+  }
+
+  .project-technology:hover {
     background-color: #343a40;
     color: #e9ecef;
   }
@@ -218,9 +272,15 @@
 
 /* Project Description */
 .project-description {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
   color: #6c757d;
-  line-height: 1.6;
+  line-height: 1.7;
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -233,13 +293,22 @@
 .project-actions {
   display: flex;
   gap: 1rem;
+  margin-top: auto;
+  /* Pushes buttons to bottom */
+}
+
+/* Ensure buttons take up space nicely */
+.project-actions .button {
+  flex: 1;
+  justify-content: center;
 }
 
 /* No Projects Message */
 .no-projects {
   text-align: center;
-  padding: 3rem 0;
+  padding: 4rem 0;
   color: #6c757d;
+  font-size: 1.1rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -251,50 +320,50 @@
 /* Responsive Adjustments */
 @media (max-width: 992px) {
   .projects-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .projects-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    /* Full width cards on mobile */
+    gap: 2rem;
   }
-  
+
   .project-filter {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
   }
-  
+
   .project-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
-  
+
   .project-details {
-    padding: 1.2rem;
+    padding: 1.5rem;
+  }
+
+  .project-image-container {
+    height: 200px;
   }
 }
 
 @media (max-width: 480px) {
   .projects-filters {
-    flex-direction: column;
-    align-items: center;
     gap: 0.8rem;
   }
-  
+
   .project-filter {
-    width: 100%;
-    max-width: 200px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 25px;
   }
-  
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
-  
+
   .project-image-container {
     height: 180px;
   }
-  
+
   .project-actions {
     flex-direction: column;
   }

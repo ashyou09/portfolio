@@ -27,7 +27,7 @@ function Section({
 }) {
   // Generate section style if backgroundColor is provided
   const sectionStyle = backgroundColor ? { backgroundColor } : {};
-  
+
   return (
     <section id={id} className={`section ${className}`} style={sectionStyle}>
       <div className={`section-container ${fullWidth ? 'full-width' : ''}`}>
@@ -37,7 +37,7 @@ function Section({
           {subtitle && <p className="section-subtitle">{subtitle}</p>}
           <div className="section-divider"></div>
         </div>
-        
+
         {/* Section Content */}
         <div className="section-content">
           {children}

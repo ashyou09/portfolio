@@ -30,16 +30,16 @@ function App() {
   useEffect(() => {
     // Get all anchor links
     const anchorLinks = document.querySelectorAll('a[href^="#"]');
-    
+
     // Add click event listener to each anchor link
     anchorLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function (e) {
         // Prevent default anchor click behavior
         e.preventDefault();
-        
+
         // Get the target section id from the href attribute
         const targetId = this.getAttribute('href');
-        
+
         // If the target is just "#", scroll to top
         if (targetId === '#') {
           window.scrollTo({
@@ -48,19 +48,19 @@ function App() {
           });
           return;
         }
-        
+
         // Find the target element
         const targetElement = document.querySelector(targetId);
-        
+
         // If target element exists, scroll to it
         if (targetElement) {
           // Get header height for offset (with a small extra padding)
           const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
           const scrollPadding = 20;
-          
+
           // Calculate the target position
           const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - scrollPadding;
-          
+
           // Scroll to the target position
           window.scrollTo({
             top: targetPosition,
@@ -69,38 +69,38 @@ function App() {
         }
       });
     });
-    
+
     // Clean up event listeners on component unmount
     return () => {
       anchorLinks.forEach(link => {
-        link.removeEventListener('click', () => {});
+        link.removeEventListener('click', () => { });
       });
     };
   }, []);
-  
+
   return (
     <div className="app">
       {/* Header */}
       <Header />
-      
+
       {/* Main Content */}
       <main className="main-content">
         {/* Hero Section */}
         <Hero />
-        
+
         {/* About Section */}
         <About />
-        
+
         {/* Skills Section */}
         <Skills />
-        
+
         {/* Projects Section */}
         <Projects />
-        
+
         {/* Contact Section */}
         <Contact />
       </main>
-      
+
       {/* Footer */}
       <Footer />
     </div>

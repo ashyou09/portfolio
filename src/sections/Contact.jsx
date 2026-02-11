@@ -3,20 +3,15 @@ import Section from '../components/Section';
 import Button from '../components/Button';
 import personalInfo from '../data/personalInfo';
 import '../styles/Contact.css';
-import emailjs from 'emailjs-com'; // Import EmailJS
 
 function Contact() {
   // Form state
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     subject: '',
     message: ''
   });
 
-  // Form submission state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState({ success: false, message: '' });
   const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
@@ -41,20 +36,12 @@ function Contact() {
       errors.name = 'Name is required';
     }
 
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required';
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
-      errors.email = 'Invalid email address';
-    }
-
     if (!formData.subject.trim()) {
       errors.subject = 'Subject is required';
     }
 
     if (!formData.message.trim()) {
       errors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
-      errors.message = 'Message must be at least 10 characters';
     }
 
     setFormErrors(errors);
@@ -68,41 +55,17 @@ function Contact() {
       return;
     }
 
-    setIsSubmitting(true);
+    // Construct mailto link
+    const { name, subject, message } = formData;
+    const emailSubject = encodeURIComponent(`${subject} - from ${name}`);
+    const emailBody = encodeURIComponent(`Name: ${name}\n\nMessage:\n${message}`);
 
-    // EmailJS integration
-    emailjs.send(
-      'service_oo9xr48', // Replace with your Service ID
-      'template_cc6thp7', // Replace with your Template ID
-      formData,
-      'SIdrSbXnfug2bBwbJ'       // Replace with your User ID
-    )
-    .then((response) => {
-      console.log('SUCCESS!', response.status, response.text);
-      setIsSubmitting(false);
-      setSubmitResult({
-        success: true,
-        message: 'Your message has been sent successfully! I will get back to you soon.'
-      });
+    // Open default mail client
+    window.location.href = `mailto:${personalInfo.email}?subject=${emailSubject}&body=${emailBody}`;
 
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-
-      setTimeout(() => {
-        setSubmitResult({ success: false, message: '' });
-      }, 5000);
-    }, (err) => {
-      console.log('FAILED...', err);
-      setIsSubmitting(false);
-      setSubmitResult({
-        success: false,
-        message: 'There was an error sending your message. Please try again later.'
-      });
-    });
+    // Optional: clear form or show success message (though mailto happens outside app)
+    // We'll just leave the form as is so they can see what they wrote if needed, 
+    // or we could clear it. Let's keep it simple.
   };
 
   return (
@@ -184,12 +147,6 @@ function Contact() {
         {/* Contact Form */}
         <div className="contact-form-container">
           <form className="contact-form" onSubmit={handleSubmit}>
-            {/* Form Result Message */}
-            {submitResult.message && (
-              <div className={`form-result ${submitResult.success ? 'success' : 'error'}`}>
-                {submitResult.message}
-              </div>
-            )}
 
             {/* Name Input */}
             <div className="form-group">
@@ -206,20 +163,7 @@ function Contact() {
               {formErrors.name && <span className="error-message">{formErrors.name}</span>}
             </div>
 
-            {/* Email Input */}
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Your Email"
-                className={formErrors.email ? 'error' : ''}
-              />
-              {formErrors.email && <span className="error-message">{formErrors.email}</span>}
-            </div>
+            {/* Email Input REMOVED as requested */}
 
             {/* Subject Input */}
             <div className="form-group">
@@ -253,8 +197,8 @@ function Contact() {
 
             {/* Submit Button */}
             <div className="form-submit">
-              <Button type="primary" disabled={isSubmitting}>
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+              <Button type="primary">
+                Send Email
               </Button>
             </div>
           </form>

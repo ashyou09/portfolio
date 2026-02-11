@@ -1,66 +1,80 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import '../styles/TiltCard.css';
 
-/**
- * TiltCard Component
- * 
- * A container component that applies a 3D tilt effect to its children on hover.
- * Uses mouse position to calculate rotation transforms.
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - Content to be tilted
- * @param {number} props.max - Maximum tilt angle in degrees (default: 15)
- * @param {number} props.perspective - 3D perspective depth (default: 1000)
- * @param {number} props.scale - Scale factor on hover (default: 1.05)
- */
-const TiltCard = ({ children, max = 15, perspective = 1000, scale = 1.05, className = '' }) => {
-    const [style, setStyle] = useState({});
-    const cardRef = useRef(null);
+const TiltCard = ({ children, className = '' }) => {
+    const ref = useRef(null);
+    const [hover, setHover] = useState(false);
+
+    // Motion values for tilt
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    // Smooth spring physics for tilt
+    const mouseX = useSpring(x, { stiffness: 300, damping: 30 });
+    const mouseY = useSpring(y, { stiffness: 300, damping: 30 });
+
+    // Convert mouse position to rotation degrees
+    // Range: -20 to 20 degrees
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], [20, -20]);
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-20, 20]);
 
     const handleMouseMove = (e) => {
-        if (!cardRef.current) return;
+        if (!ref.current) return;
 
-        const card = cardRef.current;
-        const { left, top, width, height } = card.getBoundingClientRect();
+        const rect = ref.current.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
 
-        // Calculate mouse position relative to card center
-        const x = e.clientX - left - width / 2;
-        const y = e.clientY - top - height / 2;
+        const mouseXPos = e.clientX - rect.left;
+        const mouseYPos = e.clientY - rect.top;
 
-        // Calculate rotation values
-        // RotateX is based on Y axis movement (up/down tilts x-axis)
-        // RotateY is based on X axis movement (left/right tilts y-axis)
-        // We invert X rotation so moving mouse up tilts top away
-        const rotateX = (y / (height / 2)) * -max;
-        const rotateY = (x / (width / 2)) * max;
+        // Calculate normalized position (-0.5 to 0.5)
+        const xPct = mouseXPos / width - 0.5;
+        const yPct = mouseYPos / height - 0.5;
 
-        setStyle({
-            transform: `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${scale}, ${scale}, ${scale})`,
-            transition: 'none', // Remove transition during movement for smoothness
-        });
+        x.set(xPct);
+        y.set(yPct);
     };
 
     const handleMouseLeave = () => {
-        setStyle({
-            transform: `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
-            transition: 'transform 0.5s ease-out', // Smooth return to center
-        });
+        setHover(false);
+        x.set(0);
+        y.set(0);
     };
 
     return (
-        <div
-            className={`tilt-card ${className}`}
-            ref={cardRef}
+        <motion.div
+            ref={ref}
             onMouseMove={handleMouseMove}
+            onMouseEnter={() => setHover(true)}
             onMouseLeave={handleMouseLeave}
-            style={style}
+            style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+            }}
+            className={`tilt-card-premium ${className}`}
         >
-            <div className="tilt-card-inner">
+            <div
+                style={{
+                    transform: "translateZ(50px)",
+                    transformStyle: "preserve-3d"
+                }}
+                className="tilt-card-content"
+            >
                 {children}
             </div>
-            {/* Glare effect overlay */}
-            <div className="tilt-card-glare" />
-        </div>
+
+            {/* Gloss Effect */}
+            <motion.div
+                className="tilt-card-gloss"
+                style={{
+                    opacity: hover ? 0.4 : 0,
+                    background: `radial-gradient(circle at ${50 + x.get() * 100}% ${50 + y.get() * 100}%, rgba(255,255,255,0.8) 0%, transparent 60%)`
+                }}
+            />
+        </motion.div>
     );
 };
 

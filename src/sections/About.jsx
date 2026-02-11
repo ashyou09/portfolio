@@ -27,9 +27,9 @@ function About() {
         <div className="about-image-container">
           <div className="about-image-wrapper">
             {/* Replace with actual image path */}
-            <img 
-              src="/images/profile.jpg" 
-              alt={personalInfo.name} 
+            <img
+              src="/images/profile.jpg"
+              alt={personalInfo.name}
               className="about-image"
               // Fallback if image doesn't load
               onError={(e) => {
@@ -40,32 +40,32 @@ function About() {
           </div>
           <div className="about-image-backdrop"></div>
         </div>
-        
+
         {/* About Content */}
         <div className="about-content">
           <h3 className="about-greeting">Hello there! I'm {personalInfo.name}</h3>
-          
+
           {/* Long Bio - Split into paragraphs */}
           <div className="about-bio">
             {personalInfo.longBio.split('\n\n').map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
-          
+
           {/* Personal Info List */}
           <div className="about-info">
             <div className="about-info-item">
               <span className="about-info-label">Name:</span>
               <span className="about-info-value">{personalInfo.name}</span>
             </div>
-            
+
             <div className="about-info-item">
               <span className="about-info-label">Email:</span>
               <span className="about-info-value">
                 <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
               </span>
             </div>
-            
+
             {personalInfo.phone && (
               <div className="about-info-item">
                 <span className="about-info-label">Phone:</span>
@@ -74,13 +74,13 @@ function About() {
                 </span>
               </div>
             )}
-            
+
             <div className="about-info-item">
               <span className="about-info-label">Location:</span>
               <span className="about-info-value">{personalInfo.location}</span>
             </div>
           </div>
-          
+
           {/* Interests */}
           <div className="about-interests">
             <h4 className="about-interests-title">My Interests</h4>
@@ -90,15 +90,14 @@ function About() {
               ))}
             </ul>
           </div>
-          
+
           {/* Resume Button */}
           {personalInfo.resumeLink && (
             <div className="about-resume">
-              <Button 
-                href={personalInfo.resumeLink} 
+              <Button
+                href={personalInfo.resumeLink}
                 type="primary"
-                target="_blank"
-                rel="noopener noreferrer"
+                download="Resume-Ashutosh_Singh.pdf"
               >
                 Download Resume
               </Button>

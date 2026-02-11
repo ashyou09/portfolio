@@ -16,13 +16,13 @@
 
 const personalInfo = {
   name: "Ashutosh Singh",
-  title: "Front-End Developer",
+  title: "AI & Software Engineer",
   email: "ashutosh.singh2024@nst.rishihood.edu.in",
   location: "India",
   // phone: "", // Removed as requested
   
   // Short bio for hero section
-  bio: "Dedicated Front-End Developer with multiple Projects, Real-World Problem Solver, always eager to learn, and Competitive Coding Experience.",
+  bio: "AI-focused Computer Science student exploring scalable intelligent systems at the intersection of Reinforcement Learning and Large Language Models. Currently learning and experimenting with hybrid RL-LLM architectures, multi-agent frameworks, and real-world AI applications.",
   
   // Detailed bio for about section
   longBio: `I am a Bachelor of Technology (Artificial Intelligence) student at Newton School of Technology, Rishihood University (2024-2028).

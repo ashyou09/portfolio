@@ -12,17 +12,17 @@ import '../styles/Header.css';
 function Header() {
   // State for mobile menu toggle
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   // State for header scroll effect
   const [scrolled, setScrolled] = useState(false);
-  
+
   /**
    * Toggle the mobile menu
    */
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  
+
   /**
    * Handle scroll event to add/remove header styling
    */
@@ -35,16 +35,16 @@ function Header() {
         setScrolled(false);
       }
     };
-    
+
     // Add scroll event listener
     window.addEventListener('scroll', handleScroll);
-    
+
     // Clean up event listener on component unmount
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-container">
@@ -54,7 +54,7 @@ function Header() {
             <span className="logo-text">Portfolio</span>
           </a>
         </div>
-        
+
         {/* Desktop Navigation */}
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <ul className="nav-links">
@@ -65,7 +65,7 @@ function Header() {
             <li><a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a></li>
           </ul>
         </nav>
-        
+
         {/* Mobile Menu Toggle Button */}
         <div className="menu-toggle" onClick={toggleMenu}>
           <div className={`hamburger ${isMenuOpen ? 'active' : ''}`}>
