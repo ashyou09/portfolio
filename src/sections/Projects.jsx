@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Section from '../components/Section';
 import Button from '../components/Button';
+import TiltCard from '../components/TiltCard';
 import projects from '../data/projects';
 import '../styles/Projects.css';
 
@@ -21,7 +22,7 @@ import '../styles/Projects.css';
 function Projects() {
   // State for active filter
   const [activeFilter, setActiveFilter] = useState('all');
-  
+
   /**
    * Filter projects based on active filter
    * @returns {Array} Filtered projects array
@@ -32,7 +33,7 @@ function Projects() {
     }
     return projects;
   };
-  
+
   /**
    * Handle filter button click
    * @param {string} filter - The filter to apply
@@ -40,10 +41,10 @@ function Projects() {
   const handleFilterClick = (filter) => {
     setActiveFilter(filter);
   };
-  
+
   // Get filtered projects
   const filteredProjects = getFilteredProjects();
-  
+
   return (
     <Section
       id="projects"
@@ -66,101 +67,103 @@ function Projects() {
             Featured
           </button>
         </div>
-        
+
         {/* Projects Grid */}
         <div className="projects-grid">
           {filteredProjects.map((project) => (
-            <div key={project.id} className="project-card">
-              {/* Project Image */}
-              <div className="project-image-container">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="project-image"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/600x400?text=Project+Image';
-                  }}
-                />
-                
-                {/* Project Links Overlay */}
-                <div className="project-links">
-                  {project.githubLink && (
-                    <a
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link github"
-                      aria-label="View GitHub Repository"
-                    >
-                      GitHub
-                    </a>
-                  )}
-                  {project.liveLink && (
-                    <a
-                      href={project.liveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link live"
-                      aria-label="View Live Demo"
-                    >
-                      Live Demo
-                    </a>
+            <TiltCard key={project.id} className="project-card-wrapper">
+              <div className="project-card">
+                {/* Project Image */}
+                <div className="project-image-container">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="project-image"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/600x400?text=Project+Image';
+                    }}
+                  />
+
+                  {/* Project Links Overlay */}
+                  <div className="project-links">
+                    {project.githubLink && (
+                      <a
+                        href={project.githubLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-link github"
+                        aria-label="View GitHub Repository"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                    {project.liveLink && (
+                      <a
+                        href={project.liveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-link live"
+                        aria-label="View Live Demo"
+                      >
+                        Live Demo
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Featured Badge */}
+                  {project.featured && (
+                    <div className="project-featured-badge">Featured</div>
                   )}
                 </div>
-                
-                {/* Featured Badge */}
-                {project.featured && (
-                  <div className="project-featured-badge">Featured</div>
-                )}
+
+                {/* Project Details */}
+                <div className="project-details">
+                  <h3 className="project-title">{project.title}</h3>
+
+                  {/* Project Technologies */}
+                  <div className="project-technologies">
+                    {project.technologies.map((tech, index) => (
+                      <span key={index} className="project-technology">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Project Description */}
+                  <p className="project-description">{project.description}</p>
+
+                  {/* Project Actions */}
+                  <div className="project-actions">
+                    {project.githubLink && (
+                      <Button
+                        href={project.githubLink}
+                        type="outline"
+                        size="small"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Code
+                      </Button>
+                    )}
+                    {project.liveLink && (
+                      <Button
+                        href={project.liveLink}
+                        type="primary"
+                        size="small"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Live Demo
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
-              
-              {/* Project Details */}
-              <div className="project-details">
-                <h3 className="project-title">{project.title}</h3>
-                
-                {/* Project Technologies */}
-                <div className="project-technologies">
-                  {project.technologies.map((tech, index) => (
-                    <span key={index} className="project-technology">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                
-                {/* Project Description */}
-                <p className="project-description">{project.description}</p>
-                
-                {/* Project Actions */}
-                <div className="project-actions">
-                  {project.githubLink && (
-                    <Button
-                      href={project.githubLink}
-                      type="outline"
-                      size="small"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Code
-                    </Button>
-                  )}
-                  {project.liveLink && (
-                    <Button
-                      href={project.liveLink}
-                      type="primary"
-                      size="small"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Live Demo
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
-        
+
         {/* No Projects Message */}
         {filteredProjects.length === 0 && (
           <div className="no-projects">

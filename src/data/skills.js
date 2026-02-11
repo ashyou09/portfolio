@@ -14,61 +14,53 @@
 const skills = {
   // Frontend Development Skills
   frontend: [
-    { name: "HTML5", level: 5, icon: "html5" },
-    { name: "CSS3", level: 5, icon: "css3" },
-    { name: "JavaScript", level: 5, icon: "javascript" },
+    { name: "HTML", level: 5, icon: "html5" },
+    { name: "CSS", level: 5, icon: "css3" },
+    { name: "JavaScript", level: 4, icon: "javascript" },
     { name: "React", level: 4, icon: "react" },
-    { name: "Redux", level: 4, icon: "redux" },
-    { name: "TypeScript", level: 3, icon: "typescript" },
-    { name: "Sass/SCSS", level: 4, icon: "sass" },
-    { name: "Tailwind CSS", level: 4, icon: "tailwind" },
-    { name: "Bootstrap", level: 4, icon: "bootstrap" },
+    { name: "Tailwind CSS", level: 3, icon: "tailwind" },
   ],
   
   // Backend Development Skills
   backend: [
-    { name: "Node.js", level: 4, icon: "nodejs" },
-    { name: "Express.js", level: 4, icon: "express" },
-    { name: "Python", level: 3, icon: "python" },
-    { name: "Django", level: 3, icon: "django" },
-    { name: "PHP", level: 3, icon: "php" },
-    { name: "RESTful APIs", level: 4, icon: "api" },
-    { name: "GraphQL", level: 3, icon: "graphql" },
+    { name: "Node.js", level: 3, icon: "nodejs" },
+    { name: "Express.js", level: 3, icon: "express" },
+    { name: "Python", level: 4, icon: "python" },
+    { name: "FastAPI", level: 3, icon: "fastapi" },
+    { name: "Supabase", level: 3, icon: "supabase" },
+    { name: "MongoDB", level: 3, icon: "mongodb" },
+    { name: "Firebase", level: 3, icon: "firebase" },
   ],
   
-  // Database Skills
-  database: [
-    { name: "MongoDB", level: 4, icon: "mongodb" },
-    { name: "MySQL", level: 4, icon: "mysql" },
-    { name: "PostgreSQL", level: 3, icon: "postgresql" },
-    { name: "Firebase", level: 4, icon: "firebase" },
-    { name: "Redis", level: 2, icon: "redis" },
+  // Data Science & Machine Learning
+  datascience: [
+    { name: "Machine Learning", level: 4, icon: "machinelearning" }, // Placeholder icon name
+    { name: "NumPy", level: 4, icon: "numpy" },
+    { name: "Pandas", level: 4, icon: "pandas" },
+    { name: "Matplotlib", level: 3, icon: "matplotlib" },
+    { name: "Scikit-learn", level: 3, icon: "scikitlearn" },
+    { name: "Generative AI", level: 4, icon: "ai" },
   ],
   
   // DevOps & Tools
   devops: [
     { name: "Git", level: 4, icon: "git" },
-    { name: "Docker", level: 3, icon: "docker" },
-    { name: "AWS", level: 3, icon: "aws" },
-    { name: "CI/CD", level: 3, icon: "cicd" },
-    { name: "Webpack", level: 3, icon: "webpack" },
-    { name: "Vite", level: 4, icon: "vite" },
+    { name: "Vite", level: 3, icon: "vite" },
   ],
   
   // Design Skills
   design: [
-    { name: "Figma", level: 4, icon: "figma" },
-    { name: "Adobe XD", level: 3, icon: "adobexd" },
-    { name: "Photoshop", level: 3, icon: "photoshop" },
+    { name: "Figma", level: 3, icon: "figma" },
     { name: "UI/UX Design", level: 3, icon: "uiux" },
-    { name: "Responsive Design", level: 4, icon: "responsive" },
+    { name: "Responsive Design", level: 5, icon: "responsive" },
   ],
   
   // Soft Skills
   soft: [
+    { name: "Critical Thinking", level: 5, icon: "criticalthinking" },
     { name: "Problem Solving", level: 5, icon: "problemsolving" },
     { name: "Communication", level: 4, icon: "communication" },
-    { name: "Teamwork", level: 4, icon: "teamwork" },
+    { name: "Teamwork", level: 5, icon: "teamwork" },
     { name: "Time Management", level: 4, icon: "timemanagement" },
     { name: "Adaptability", level: 5, icon: "adaptability" },
   ]

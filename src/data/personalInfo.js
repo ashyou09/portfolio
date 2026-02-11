@@ -15,40 +15,40 @@
  */
 
 const personalInfo = {
-  name: "Your Name",
-  title: "Full Stack Developer",
-  email: "your.email@example.com",
-  location: "City, Country",
-  phone: "+1 (123) 456-7890", // Optional
+  name: "Ashutosh Singh",
+  title: "Front-End Developer",
+  email: "ashutosh.singh2024@nst.rishihood.edu.in",
+  location: "India",
+  // phone: "", // Removed as requested
   
   // Short bio for hero section
-  bio: "I'm a passionate Full Stack Developer with expertise in React, Node.js, and modern web technologies.",
+  bio: "Dedicated Front-End Developer with multiple Projects, Real-World Problem Solver, always eager to learn, and Competitive Coding Experience.",
   
   // Detailed bio for about section
-  longBio: `I'm a Full Stack Developer with over 5 years of experience building web applications.
-  I specialize in JavaScript technologies across the stack, with a focus on React, Node.js, and modern frameworks.
+  longBio: `I am a Bachelor of Technology (Artificial Intelligence) student at Newton School of Technology, Rishihood University (2024-2028).
   
-  My journey in web development started when I built my first website in college, and I've been hooked ever since.
-  I enjoy solving complex problems and creating intuitive, efficient user experiences.
+  I have a strong background in competitive coding with a Leetcode rating of 1500+ (160+ questions) and CodeChef rating of 1300+.
   
-  When I'm not coding, you can find me hiking, reading, or experimenting with new technologies.`,
+  I have completed specializations in Machine Learning from Stanford University & DeepLearning.AI, and have certifications in Python and C++ for Beginners.
+  
+  I am passionate about building impactful web applications and solving real-world problems through code.`,
   
   // Social media links
   social: {
-    github: "https://github.com/yourusername",
-    linkedin: "https://linkedin.com/in/yourusername",
-    twitter: "https://twitter.com/yourusername",
-    // Add more social links as needed
+    github: "https://github.com/ashyou09",
+    linkedin: "https://www.linkedin.com/in/ashutosh-singh-877520320/",
+    leetcode: "https://leetcode.com/u/ashyou09/",
+    codechef: "https://www.codechef.com/users/ashyou09",
   },
   
   // Personal interests
   interests: [
+    "Competitive Coding",
     "Web Development",
-    "Open Source",
-    "UI/UX Design",
-    "Artificial Intelligence",
-    "Hiking",
-    "Photography"
+    "Machine Learning",
+    "Generative AI",
+    "Hackathons",
+    "Olympiads"
   ],
   
   // Resume link

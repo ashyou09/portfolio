@@ -3,21 +3,8 @@ import Section from '../components/Section';
 import Button from '../components/Button';
 import personalInfo from '../data/personalInfo';
 import '../styles/Contact.css';
+import emailjs from 'emailjs-com'; // Import EmailJS
 
-/**
- * Contact Section Component
- * 
- * This component renders the Contact section of the portfolio, providing
- * a contact form and additional contact information.
- * 
- * Features:
- * - Contact form with validation
- * - Social media links
- * - Direct contact information
- * - Form submission handling
- * 
- * @returns {JSX.Element} The Contact section component
- */
 function Contact() {
   // Form state
   const [formData, setFormData] = useState({
@@ -26,24 +13,19 @@ function Contact() {
     subject: '',
     message: ''
   });
-  
+
   // Form submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState({ success: false, message: '' });
   const [formErrors, setFormErrors] = useState({});
-  
-  /**
-   * Handle form input changes
-   * @param {Event} e - Input change event
-   */
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: value
     }));
-    
-    // Clear error for this field when user types
+
     if (formErrors[name]) {
       setFormErrors(prevErrors => ({
         ...prevErrors,
@@ -51,80 +33,78 @@ function Contact() {
       }));
     }
   };
-  
-  /**
-   * Validate form data
-   * @returns {boolean} Whether the form is valid
-   */
+
   const validateForm = () => {
     const errors = {};
-    
-    // Name validation
+
     if (!formData.name.trim()) {
       errors.name = 'Name is required';
     }
-    
-    // Email validation
+
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
       errors.email = 'Invalid email address';
     }
-    
-    // Subject validation
+
     if (!formData.subject.trim()) {
       errors.subject = 'Subject is required';
     }
-    
-    // Message validation
+
     if (!formData.message.trim()) {
       errors.message = 'Message is required';
     } else if (formData.message.trim().length < 10) {
       errors.message = 'Message must be at least 10 characters';
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  
-  /**
-   * Handle form submission
-   * @param {Event} e - Form submission event
-   */
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validate form
+
     if (!validateForm()) {
       return;
     }
-    
-    // Set submitting state
+
     setIsSubmitting(true);
-    
-    // Simulate form submission (replace with actual API call)
-    setTimeout(() => {
+
+    // EmailJS integration
+    emailjs.send(
+      'service_oo9xr48', // Replace with your Service ID
+      'template_cc6thp7', // Replace with your Template ID
+      formData,
+      'SIdrSbXnfug2bBwbJ'       // Replace with your User ID
+    )
+    .then((response) => {
+      console.log('SUCCESS!', response.status, response.text);
       setIsSubmitting(false);
       setSubmitResult({
         success: true,
         message: 'Your message has been sent successfully! I will get back to you soon.'
       });
-      
-      // Reset form after successful submission
+
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-      
-      // Clear success message after 5 seconds
+
       setTimeout(() => {
         setSubmitResult({ success: false, message: '' });
       }, 5000);
-    }, 1500);
+    }, (err) => {
+      console.log('FAILED...', err);
+      setIsSubmitting(false);
+      setSubmitResult({
+        success: false,
+        message: 'There was an error sending your message. Please try again later.'
+      });
+    });
   };
-  
+
   return (
     <Section
       id="contact"
@@ -139,7 +119,7 @@ function Contact() {
             I'm currently available for freelance work, full-time positions, or collaborations.
             Feel free to reach out using the form or through any of the methods below.
           </p>
-          
+
           {/* Direct Contact Details */}
           <div className="contact-details">
             {/* Email */}
@@ -152,7 +132,7 @@ function Contact() {
                 <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
               </div>
             </div>
-            
+
             {/* Phone (if available) */}
             {personalInfo.phone && (
               <div className="contact-detail-item">
@@ -165,7 +145,7 @@ function Contact() {
                 </div>
               </div>
             )}
-            
+
             {/* Location */}
             <div className="contact-detail-item">
               <div className="contact-icon">
@@ -177,7 +157,7 @@ function Contact() {
               </div>
             </div>
           </div>
-          
+
           {/* Social Links */}
           <div className="contact-social">
             <h4 className="contact-social-title">Connect With Me</h4>
@@ -200,7 +180,7 @@ function Contact() {
             </div>
           </div>
         </div>
-        
+
         {/* Contact Form */}
         <div className="contact-form-container">
           <form className="contact-form" onSubmit={handleSubmit}>
@@ -210,7 +190,7 @@ function Contact() {
                 {submitResult.message}
               </div>
             )}
-            
+
             {/* Name Input */}
             <div className="form-group">
               <label htmlFor="name">Name</label>
@@ -225,7 +205,7 @@ function Contact() {
               />
               {formErrors.name && <span className="error-message">{formErrors.name}</span>}
             </div>
-            
+
             {/* Email Input */}
             <div className="form-group">
               <label htmlFor="email">Email</label>
@@ -240,7 +220,7 @@ function Contact() {
               />
               {formErrors.email && <span className="error-message">{formErrors.email}</span>}
             </div>
-            
+
             {/* Subject Input */}
             <div className="form-group">
               <label htmlFor="subject">Subject</label>
@@ -255,7 +235,7 @@ function Contact() {
               />
               {formErrors.subject && <span className="error-message">{formErrors.subject}</span>}
             </div>
-            
+
             {/* Message Input */}
             <div className="form-group">
               <label htmlFor="message">Message</label>
@@ -270,7 +250,7 @@ function Contact() {
               ></textarea>
               {formErrors.message && <span className="error-message">{formErrors.message}</span>}
             </div>
-            
+
             {/* Submit Button */}
             <div className="form-submit">
               <Button type="primary" disabled={isSubmitting}>

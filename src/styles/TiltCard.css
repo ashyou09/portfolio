@@ -1,0 +1,42 @@
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  /* Make sure container doesn't block interactions */
+  display: block;
+}
+
+.tilt-card-inner {
+  transform-style: preserve-3d;
+  height: 100%;
+  width: 100%;
+}
+
+/* Add depth to content */
+.tilt-card-inner > * {
+  transform: translateZ(20px);
+}
+
+/* Glare effect */
+.tilt-card-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 80%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  mix-blend-mode: overlay;
+  z-index: 10;
+  border-radius: inherit;
+}
+
+.tilt-card:hover .tilt-card-glare {
+  opacity: 1;
+}
