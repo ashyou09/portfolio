@@ -414,10 +414,10 @@ export default function LiveNetwork({
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0, 2.0, 6.35], fov: 46 }}
+      camera={{ position: [0, 1.7, 4.55], fov: 54 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >
-      <group rotation={[0, -0.16, 0]}>
+      <group rotation={[0, -0.24, 0]}>
         <Scene
           dataset={dataset}
           hidden={hidden}

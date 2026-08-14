@@ -144,6 +144,7 @@ export default function Hero() {
           </div>
 
           <div className="lab-panel__stage">
+            <div className="lab-panel__canvas">
             <Suspense
               fallback={
                 <div className="lab-panel__loading">
@@ -160,6 +161,7 @@ export default function Hero() {
                 onStats={onStats}
               />
             </Suspense>
+            </div>
           </div>
 
           <div className="lab-panel__arch">
