@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useReducedMotion } from 'motion/react';
@@ -18,15 +18,15 @@ import { createNetwork, forward, trainStep, sampleGrid, DATASETS } from './mlp';
  * new shape from scratch, and you can watch it struggle with the spiral.
  */
 
-const SPAN_X = 4.5;   // total width the network occupies, whatever its depth
-const SPAN_Y = 3.1;    // and the tallest a column may get
-const BASE_Y = 0.55;
+const SPAN_X = 4.9;   // total width the network occupies, whatever its depth
+const SPAN_Y = 3.5;    // and the tallest a column may get
+const BASE_Y = 0.75;
 const GRID_RESOLUTION = 40;
-const FLOOR_Y = -1.85;
-const FLOOR_SPAN = 5.1;
+const FLOOR_Y = -2.15;
+const FLOOR_SPAN = 5.4;
 const EXTENT = 1.15;
 const POINT_COUNT = 220;
-const FLOW_COUNT = 60;
+const FLOW_COUNT = 44;
 
 // Annotations only stay legible on a small network. Past these counts the
 // labels are suppressed and the panel says so.
@@ -45,7 +45,7 @@ const CLASS_B = new THREE.Color('#8f9aa8');
 function makeLayout(sizes) {
   const layerGap = sizes.length > 1 ? SPAN_X / (sizes.length - 1) : 0;
   const widest = Math.max(...sizes);
-  const unitGap = Math.min(0.62, SPAN_Y / Math.max(widest - 1, 1));
+  const unitGap = Math.min(0.82, SPAN_Y / Math.max(widest - 1, 1));
 
   return (layer, unit, size) =>
     new THREE.Vector3(
@@ -129,38 +129,20 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
   }, [sizes, nodePosition]);
 
   // --- forward-pass flow: dots riding every edge from input to output -------
+  // One arrow per connection, phase-offset so they do not march in lockstep.
+  // Any slots beyond the connection count are parked out of sight.
   const flowState = useMemo(
     () =>
-      Array.from({ length: FLOW_COUNT }, () => ({
-        edge: Math.floor(Math.random() * Math.max(edgeIndex.length, 1)),
-        t: Math.random(),
-        speed: 0.16 + Math.random() * 0.14,
+      Array.from({ length: FLOW_COUNT }, (_, i) => ({
+        edge: i,
+        active: i < edgeIndex.length,
+        t: (i * 0.37) % 1,
+        speed: 0.17 + ((i * 7) % 5) * 0.018,
       })),
     [edgeIndex.length]
   );
 
-  const flowGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(FLOW_COUNT * 3), 3)
-    );
-    return geometry;
-  }, []);
-
-  const flowSprite = useMemo(() => {
-    const size = 32;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const context = canvas.getContext('2d');
-    const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-    gradient.addColorStop(0, 'rgba(255,255,255,1)');
-    gradient.addColorStop(1, 'rgba(255,255,255,0)');
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
-    return new THREE.CanvasTexture(canvas);
-  }, []);
+  const flowDummy = useMemo(() => new THREE.Object3D(), []);
 
   // --- decision boundary texture -----------------------------------------
   const boundary = useMemo(() => {
@@ -254,23 +236,37 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
     });
     edgeGeometry.attributes.color.needsUpdate = true;
 
-    // Flow dots always run input to output, so the direction of the forward
-    // pass is visible even when the weights have already settled.
+    // Arrowheads ride every edge from input to output, each turned to face the
+    // way it is travelling, so the direction of the forward pass is explicit
+    // rather than implied.
     if (flowRef.current && edgeIndex.length) {
-      const array = flowRef.current.geometry.attributes.position.array;
       for (let i = 0; i < flowState.length; i += 1) {
         const flow = flowState[i];
-        if (animate) flow.t += flow.speed * step;
-        if (flow.t >= 1) {
-          flow.t = 0;
-          flow.edge = Math.floor(Math.random() * edgeIndex.length);
+        if (!flow.active) {
+          flowDummy.position.set(0, 0, 0);
+          flowDummy.scale.setScalar(0);
+          flowDummy.updateMatrix();
+          flowRef.current.setMatrixAt(i, flowDummy.matrix);
+          continue;
         }
-        const edge = edgeIndex[flow.edge % edgeIndex.length];
-        array[i * 3] = edge.from.x + (edge.to.x - edge.from.x) * flow.t;
-        array[i * 3 + 1] = edge.from.y + (edge.to.y - edge.from.y) * flow.t;
-        array[i * 3 + 2] = edge.from.z + (edge.to.z - edge.from.z) * flow.t;
+        if (animate) flow.t += flow.speed * step;
+        if (flow.t >= 1) flow.t = 0;
+        const edge = edgeIndex[flow.edge];
+        flowDummy.position.set(
+          edge.from.x + (edge.to.x - edge.from.x) * flow.t,
+          edge.from.y + (edge.to.y - edge.from.y) * flow.t,
+          edge.from.z + (edge.to.z - edge.from.z) * flow.t
+        );
+        // lookAt aims -Z at the target; a cone points +Y, hence the quarter turn.
+        flowDummy.lookAt(edge.to);
+        flowDummy.rotateX(Math.PI / 2);
+        // Fade in and out at the ends so arrows do not pop at the nodes.
+        const fade = Math.sin(flow.t * Math.PI);
+        flowDummy.scale.setScalar(0.35 + fade * 0.8);
+        flowDummy.updateMatrix();
+        flowRef.current.setMatrixAt(i, flowDummy.matrix);
       }
-      flowRef.current.geometry.attributes.position.needsUpdate = true;
+      flowRef.current.instanceMatrix.needsUpdate = true;
     }
 
     // Node brightness tracks the live activation for one sample, cycled slowly
@@ -313,7 +309,7 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
       </mesh>
 
       <instancedMesh ref={pointRef} args={[undefined, undefined, POINT_COUNT]}>
-        <sphereGeometry args={[0.045, 8, 8]} />
+        <sphereGeometry args={[0.05, 8, 8]} />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
 
@@ -329,23 +325,20 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
 
       {/* An instanced mesh cannot resize in place, so it remounts on count. */}
       <instancedMesh key={nodeSlots.length} ref={nodeRef} args={[undefined, undefined, nodeSlots.length]}>
-        <sphereGeometry args={[0.088, 14, 14]} />
+        <sphereGeometry args={[0.125, 16, 16]} />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
 
-      <points ref={flowRef} geometry={flowGeometry}>
-        <pointsMaterial
-          map={flowSprite}
-          alphaMap={flowSprite}
+      <instancedMesh ref={flowRef} args={[undefined, undefined, FLOW_COUNT]}>
+        <coneGeometry args={[0.05, 0.16, 7]} />
+        <meshBasicMaterial
           color={POSITIVE}
-          size={0.1}
-          sizeAttenuation
           transparent
-          opacity={0.95}
+          opacity={0.9}
+          toneMapped={false}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
         />
-      </points>
+      </instancedMesh>
 
       {annotate === 'nodes' && nodeSlots.length <= NODE_LABEL_LIMIT &&
         nodeSlots.map((slot) => (
@@ -353,7 +346,7 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
             key={`label-${slot.layer}-${slot.unit}`}
             position={[slot.position.x, slot.position.y + 0.26, slot.position.z]}
             center
-            distanceFactor={7}
+            distanceFactor={9}
             style={{ pointerEvents: 'none' }}
           >
             <span className="scene-tag">{labelFor(slot, sizes)}</span>
@@ -370,7 +363,7 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
               edge.from.z + (edge.to.z - edge.from.z) * 0.74,
             ]}
             center
-            distanceFactor={7}
+            distanceFactor={9}
             style={{ pointerEvents: 'none' }}
           >
             <span className="scene-tag scene-tag--weight">
@@ -380,6 +373,32 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
         ))}
     </>
   );
+}
+
+/**
+ * Eases the camera to its resting distance instead of cutting to it. On mount
+ * and on every rebuild it starts pulled back and settles forward, which reads
+ * as the model assembling rather than appearing.
+ */
+function CameraRig({ trigger, animate }) {
+  const { camera } = useThree();
+  const rest = useRef(camera.position.z);
+  const previous = useRef(null);
+
+  useEffect(() => {
+    if (previous.current === trigger) return;
+    previous.current = trigger;
+    camera.position.z = rest.current * (animate ? 1.55 : 1);
+  }, [trigger, camera, animate]);
+
+  useFrame(() => {
+    const distance = rest.current - camera.position.z;
+    if (Math.abs(distance) < 0.002) return;
+    camera.position.z += distance * 0.055;
+    camera.updateProjectionMatrix();
+  });
+
+  return null;
 }
 
 export default function LiveNetwork({
@@ -395,7 +414,7 @@ export default function LiveNetwork({
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0.2, 2.4, 7.6], fov: 42 }}
+      camera={{ position: [0, 2.0, 6.35], fov: 46 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >
       <group rotation={[0, -0.16, 0]}>
@@ -409,6 +428,8 @@ export default function LiveNetwork({
           onStats={onStats}
         />
       </group>
+
+      <CameraRig trigger={`${dataset}-${hidden.join('-')}-${resetKey}`} animate={!reduce} />
 
       <OrbitControls
         enablePan={false}
