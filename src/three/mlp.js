@@ -78,6 +78,63 @@ export const DATASETS = {
       return points;
     },
   },
+  moons: {
+    label: 'Moons',
+    generate(count) {
+      const points = [];
+      for (let i = 0; i < count; i += 1) {
+        const upper = i % 2 === 0;
+        const angle = Math.random() * Math.PI;
+        const jitter = () => (Math.random() - 0.5) * 0.14;
+        points.push(
+          upper
+            ? {
+                x: Math.cos(angle) * 0.7 - 0.3 + jitter(),
+                y: Math.sin(angle) * 0.7 - 0.28 + jitter(),
+                label: 1,
+              }
+            : {
+                x: -Math.cos(angle) * 0.7 + 0.3 + jitter(),
+                y: -Math.sin(angle) * 0.7 + 0.28 + jitter(),
+                label: 0,
+              }
+        );
+      }
+      return points;
+    },
+  },
+  blobs: {
+    label: 'Blobs',
+    generate(count) {
+      const centres = [
+        { x: -0.52, y: -0.44, label: 0 },
+        { x: 0.55, y: 0.48, label: 1 },
+        { x: 0.5, y: -0.5, label: 1 },
+      ];
+      return Array.from({ length: count }, (_, i) => {
+        const centre = centres[i % centres.length];
+        return {
+          x: centre.x + (Math.random() - 0.5) * 0.5,
+          y: centre.y + (Math.random() - 0.5) * 0.5,
+          label: centre.label,
+        };
+      });
+    },
+  },
+  checker: {
+    label: 'Checkerboard',
+    generate(count) {
+      const points = [];
+      for (let i = 0; i < count; i += 1) {
+        const x = (Math.random() - 0.5) * 2;
+        const y = (Math.random() - 0.5) * 2;
+        // Three bands each way, so the model has to carve nine cells.
+        const cell = Math.floor((x + 1) * 1.5) + Math.floor((y + 1) * 1.5);
+        points.push({ x, y, label: cell % 2 === 0 ? 1 : 0 });
+      }
+      return points;
+    },
+  },
 };
 
 export function createNetwork(hidden = [8, 8]) {

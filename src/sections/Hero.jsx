@@ -17,7 +17,6 @@ export default function Hero() {
   const [dataset, setDataset] = useState('circles');
   const [hidden, setHidden] = useState([4]);
   const [annotate, setAnnotate] = useState('nodes');
-  const [shape, setShape] = useState('sphere');
   const [resetKey, setResetKey] = useState(0);
   const [stats, setStats] = useState({ epoch: 0, loss: 0, accuracy: 0 });
 
@@ -122,18 +121,17 @@ export default function Hero() {
             <p className="lab-panel__title">
               {[2, ...hidden, 1].join(' - ')} network, {parameters} parameters
             </p>
-            <div className="lab-panel__sets" role="group" aria-label="Training dataset">
-              {DATASET_KEYS.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="chip"
-                  aria-pressed={dataset === key}
-                  onClick={() => setDataset(key)}
-                >
-                  {DATASETS[key].label}
-                </button>
-              ))}
+            <div className="lab-panel__sets">
+              <label className="lab-panel__annotate">
+                <span>Fit</span>
+                <select value={dataset} onChange={(event) => setDataset(event.target.value)}>
+                  {DATASET_KEYS.map((key) => (
+                    <option key={key} value={key}>
+                      {DATASETS[key].label}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <button
                 type="button"
                 className="chip chip--icon"
@@ -158,7 +156,6 @@ export default function Hero() {
                 dataset={dataset}
                 hidden={hidden}
                 annotate={annotate}
-                shape={shape}
                 resetKey={resetKey}
                 onStats={onStats}
               />
@@ -194,15 +191,6 @@ export default function Hero() {
               ))}
               {hidden.length === 0 && <span className="unit unit--empty">none</span>}
             </div>
-
-            <label className="lab-panel__annotate">
-              <span>Shape</span>
-              <select value={shape} onChange={(event) => setShape(event.target.value)}>
-                <option value="sphere">Spheres</option>
-                <option value="cube">Cubes</option>
-                <option value="diamond">Diamonds</option>
-              </select>
-            </label>
 
             <label className="lab-panel__annotate">
               <span>Show</span>

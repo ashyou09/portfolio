@@ -70,14 +70,7 @@ function labelFor(slot, sizes) {
   return `h${slot.layer}.${slot.unit + 1}`;
 }
 
-/** Neuron shapes. Kept to three so the panel stays a choice, not a menu. */
-const SHAPES = {
-  sphere: <sphereGeometry args={[0.088, 14, 14]} />,
-  cube: <boxGeometry args={[0.15, 0.15, 0.15]} />,
-  diamond: <octahedronGeometry args={[0.115, 0]} />,
-};
-
-function Scene({ dataset, hidden, learningRate, annotate, shape, resetKey, animate, onStats }) {
+function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onStats }) {
   const architecture = hidden.join('-');
   const net = useMemo(
     () => createNetwork(hidden),
@@ -334,14 +327,9 @@ function Scene({ dataset, hidden, learningRate, annotate, shape, resetKey, anima
         />
       </lineSegments>
 
-      {/* Keyed on shape as well as count: an instanced mesh cannot swap its
-          geometry in place, so it remounts when either changes. */}
-      <instancedMesh
-        key={`${shape}-${nodeSlots.length}`}
-        ref={nodeRef}
-        args={[undefined, undefined, nodeSlots.length]}
-      >
-        {SHAPES[shape] || SHAPES.sphere}
+      {/* An instanced mesh cannot resize in place, so it remounts on count. */}
+      <instancedMesh key={nodeSlots.length} ref={nodeRef} args={[undefined, undefined, nodeSlots.length]}>
+        <sphereGeometry args={[0.088, 14, 14]} />
         <meshBasicMaterial toneMapped={false} />
       </instancedMesh>
 
@@ -399,7 +387,6 @@ export default function LiveNetwork({
   hidden = [8, 8],
   learningRate = 0.12,
   annotate = 'off',
-  shape = 'sphere',
   resetKey = 0,
   onStats,
 }) {
@@ -417,7 +404,6 @@ export default function LiveNetwork({
           hidden={hidden}
           learningRate={learningRate}
           annotate={annotate}
-          shape={shape}
           resetKey={resetKey}
           animate={!reduce}
           onStats={onStats}
