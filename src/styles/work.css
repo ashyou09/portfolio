@@ -1,0 +1,326 @@
+.work__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.work__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+
+/* --- sticky stack ---------------------------------------------------------
+   One slot per project. Each slot sticks under the nav while the next one
+   scrolls up over it, so the projects deal like a deck instead of scrolling
+   past as a list. The offset top per index leaves the previous card's edge
+   visible underneath.
+   ------------------------------------------------------------------------ */
+
+.stack {
+  position: relative;
+}
+
+.stack__slot {
+  position: sticky;
+  min-height: min(74vh, 660px);
+  display: flex;
+  align-items: stretch;
+  padding-bottom: 1.5rem;
+}
+
+.stack__card {
+  display: grid;
+  grid-template-columns: 0.92fr 1.15fr;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  width: 100%;
+  align-items: center;
+  padding: clamp(1.75rem, 3.5vw, 3rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(110% 80% at 88% 0%, rgba(240, 162, 46, 0.06), transparent 60%),
+    var(--bg-1);
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.stack__index {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 1.1rem;
+}
+
+.stack__index i {
+  font-style: normal;
+  color: var(--fg-3);
+}
+
+.stack__title {
+  font-size: clamp(1.65rem, 3.1vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.032em;
+  line-height: 1.06;
+  margin-bottom: 1rem;
+}
+
+.stack__blurb {
+  color: var(--fg-2);
+  font-size: 0.97rem;
+  max-width: 50ch;
+  margin-bottom: 1.5rem;
+}
+
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding: 0.9rem 0 1rem;
+  border-top: 1px solid var(--line);
+  margin-bottom: 1.35rem;
+}
+
+.metric b {
+  font-family: var(--font-mono);
+  font-size: clamp(1.7rem, 2.8vw, 2.3rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.metric span {
+  font-size: 0.84rem;
+  color: var(--fg-3);
+  max-width: 18ch;
+  line-height: 1.35;
+}
+
+.stack__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.link-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.05rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  font-size: 13.5px;
+  color: var(--fg);
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+}
+
+.link-pill:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-dim);
+}
+
+.link-pill:active {
+  transform: translateY(1px);
+}
+
+/* --- card media ---------------------------------------------------------- */
+
+.stack__media {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--bg-2);
+  aspect-ratio: 16 / 10;
+}
+
+.stack__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* The 3D project has no screenshot: its visual is the live scene below. */
+.stack__scene {
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+  text-align: center;
+  height: 100%;
+  padding: 2rem;
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgba(240, 162, 46, 0.16), transparent 70%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 39px,
+      rgba(255, 255, 255, 0.045) 39px 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 39px,
+      rgba(255, 255, 255, 0.045) 39px 40px
+    ),
+    var(--bg-2);
+}
+
+.stack__scene b {
+  font-family: var(--font-mono);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stack__scene span {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+/* --- earlier work, horizontal rail --------------------------------------- */
+
+.more {
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+}
+
+.more__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-2);
+  transition: color 0.16s var(--ease-out), border-color 0.16s var(--ease-out),
+    background 0.16s var(--ease-out);
+}
+
+.more__toggle:hover {
+  color: var(--fg);
+  border-color: var(--accent-line);
+  background: var(--accent-dim);
+}
+
+.more__toggle:active {
+  transform: translateY(1px);
+}
+
+.more__panel {
+  overflow: hidden;
+}
+
+.more__panel .more__rail {
+  padding-top: 1.5rem;
+}
+
+.more__rail {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+
+.more__item {
+  flex: 0 0 clamp(260px, 30vw, 340px);
+  scroll-snap-align: start;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--bg-1);
+  transition: border-color 0.2s var(--ease-out);
+}
+
+.more__item:hover {
+  border-color: var(--line-2);
+}
+
+.more__item img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top center;
+  border-bottom: 1px solid var(--line);
+}
+
+.more__body {
+  padding: 1.1rem 1.2rem 1.3rem;
+}
+
+.more__body h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.more__body p {
+  font-size: 0.87rem;
+  color: var(--fg-3);
+  margin-bottom: 0.9rem;
+}
+
+.more__links {
+  display: flex;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--fg-2);
+}
+
+.more__links a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 960px) {
+  .stack__slot {
+    position: static;
+    min-height: 0;
+  }
+
+  .stack__card {
+    grid-template-columns: 1fr;
+  }
+
+  .stack__media {
+    order: -1;
+  }
+
+  .work__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* Sticky stacking is motion tied to scroll position. Under reduced motion the
+   cards simply flow one after another. */
+@media (prefers-reduced-motion: reduce) {
+  .stack__slot {
+    position: static;
+    min-height: 0;
+  }
+}

@@ -1,75 +1,103 @@
 /**
- * Projects Data
- * 
- * This file contains an array of project objects that will be displayed in the portfolio.
- * Each project object contains the following properties:
- * 
- * @property {string} id - Unique identifier for the project
- * @property {string} title - The title/name of the project
- * @property {string} description - A detailed description of the project
- * @property {string[]} technologies - Array of technologies used in the project
- * @property {string} image - Path to the project image
- * @property {string} githubLink - Link to the GitHub repository
- * @property {string} liveLink - Link to the live demo (if available)
- * @property {boolean} featured - Whether the project should be featured prominently
+ * Projects in two tiers.
+ *
+ * `featured` - the work a hiring manager should see first. Full deck cards.
+ * `more`     - everything else, hidden behind a toggle so the page stays short.
+ *
+ * Every image is a real screenshot of the running product, in /public/projects.
  */
 
-import aiInterviewImg from '../assets/interview_agent.png';
-import estateVerseImg from '../assets/estate_verse.png';
-import sushiHeroImg from '../assets/sushi_hero.png';
-import photoJsonImg from '../assets/photo_json.png';
-import courseraMlCertImg from '../assets/coursera_ml_cert.png';
-
-const projects = [
+export const featured = [
   {
-    id: "estateverse",
-    title: "EstateVerse: AI-Powered Real Estate Price Persona Predictor",
-    description: "Designed and developed a full-stack AI-powered real estate application. Integrated machine learning models with a web-based interface for real-time predictions. Enabled data-driven property pricing and targeted buyer identification.",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "Python", "FastAPI", "Scikit-learn"],
-    image: estateVerseImg,
-    githubLink: "https://github.com/ashyou09/Realty-AI-Price-Persona-Predictor",
-    liveLink: "https://realestate-ml-model.vercel.app/",
-    featured: true
+    id: 'contract-risk',
+    title: 'Intelligent Contract Risk Analysis',
+    period: 'February 2026',
+    blurb:
+      'A LangGraph agent that reads a contract, isolates every clause, and flags the ones that carry legal risk. The routing is agentic, the classification is not: a tuned logistic regression does the scoring at 0.8859 F1, which is faster and far cheaper than asking an LLM to grade every clause.',
+    metric: { value: '0.8859', label: 'F1 on held-out clauses' },
+    stack: ['LangGraph', 'Scikit-learn', 'Ollama', 'Streamlit', 'Plotly', 'Pandas'],
+    image: '/projects/Contract_analysis.png',
+    imageAlt: 'Contract risk analysis showing an executive summary and risk distribution charts',
+    github: 'https://github.com/ashyou09/Contract-Risk-Classification',
+    live: 'https://contract-risk-classification.streamlit.app',
   },
   {
-    id: "sushi",
-    title: "Japanese Sushi Website",
-    description: "Designed and developed a visually appealing, sushi-themed website inspired by Japanese culture, optimized for both desktop and mobile experiences. Features responsive design, smooth scrolling, interactive menu, and fast load performance.",
-    technologies: ["HTML", "CSS", "Vanilla JavaScript"],
-    image: sushiHeroImg,
-    githubLink: "https://github.com/ashyou09/sushi_website_learn_html_css.git",
-    liveLink: "https://japanese-sushi-website.netlify.app/",
-    featured: true
+    id: 'vizag-port',
+    title: 'Visakhapatnam Port Digital Twin',
+    period: '2026',
+    blurb:
+      'A browser-native 3D digital twin of the Eastern Arm dry-bulk terminal at Visakhapatnam Port. Cranes, quay, warehouses and the Bay of Bengal are modelled in Three.js; four hundred vehicles drive real Catmull-Rom road splines through a twenty-four hour traffic cycle with night and rain states.',
+    metric: { value: '400+', label: 'Vehicles simulated live' },
+    stack: ['Three.js', 'React Three Fiber', 'drei', 'Postprocessing', 'Zustand'],
+    image: null, // the live scene further down this page is the visual
+    github: 'https://github.com/ashyou09/3D-Port-visulaization',
+    live: null,
+    scene: true,
   },
   {
-    id: "interview-agent",
-    title: "Interview Agent: AI-Powered Interview Preparation Tool",
-    description: "Developed a smart interview preparation platform that dynamically generates questions using Gemini API, simulates mock interviews, and ensures user authentication and scalability via Firebase.",
-    technologies: ["Next.js (React)", "Firebase (Firestore Auth)", "Gemini API", "Vercel"],
-    image: aiInterviewImg,
-    githubLink: "https://github.com/ashyou09/interview-agent.git",
-    liveLink: "https://ai-interview-agent-1974.vercel.app",
-    featured: true
+    id: 'interview-agent',
+    title: 'Interview Agent',
+    period: 'April 2025',
+    blurb:
+      'A mock-interview tool that generates a question set against a role and then conducts the interview by voice. Gemini handles generation and follow-ups, Vapi handles the call, and LangGraph keeps the interview state coherent between turns.',
+    metric: null,
+    stack: ['Next.js', 'Gemini API', 'Vapi', 'LangGraph', 'Firebase'],
+    image: '/projects/interview_agent.png',
+    imageAlt: 'The Interview Agent dashboard listing generated interview sets',
+    github: 'https://github.com/ashyou09/interview-agent',
+    live: 'https://ai-interview-agent-1974.vercel.app',
   },
   {
-    id: "photo-json",
-    title: "Photo to Json convertor",
-    description: "This app takes an image and extracts the image text and converts it into a JSON file.",
-    technologies: ["HTML", "CSS", "React", "AI"],
-    image: photoJsonImg,
-    githubLink: "https://github.com/ashyou09/json.convertor.git",
-    liveLink: "https://ashyou09.github.io/json.convertor/",
-    featured: false
+    id: 'eats',
+    title: 'Eats',
+    period: '2026',
+    blurb:
+      'A full MERN food-delivery platform: restaurant discovery with filtering and pagination, a cart scoped to one restaurant that debounce-syncs to MongoDB, JWT auth against either email or phone, and order tracking. The TypeScript backend is class-based rather than a pile of route handlers.',
+    metric: null,
+    stack: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS'],
+    image: '/projects/eats.png',
+    imageAlt: 'The Eats food delivery home page',
+    github: 'https://github.com/ashyou09/Eats',
+    live: 'https://eatindia.vercel.app',
   },
-  {
-    id: "ml-specialization",
-    title: "Machine Learning Specialization",
-    description: "Completed the 3-course specialization by Andrew Ng (Stanford/DeepLearning.AI). Covered Supervised Learning (Regression, Neural Networks), Advanced Algorithms, and Unsupervised Learning (Clustering, Anomaly Detection). Gained practical skills in building and optimizing ML models.",
-    technologies: ["Python", "TensorFlow", "Scikit-learn", "Neural Networks", "Supervised Learning", "Unsupervised Learning"],
-    image: courseraMlCertImg,
-    liveLink: "https://coursera.org/verify/specialization/9SW3BWV2SFGB",
-    featured: true
-  }
 ];
 
-export default projects;
+export const more = [
+  {
+    id: 'bookscan',
+    title: 'BookScan',
+    blurb:
+      'A personal reading library for PDFs and textbooks. Custom canvas PDF engine, webtoon and single-page modes, reading position synced to the exact page across devices.',
+    stack: ['Next.js', 'MongoDB', 'Zustand', 'pdfjs-dist'],
+    image: '/projects/bookscan.png',
+    github: 'https://github.com/ashyou09/BOOKSCANS',
+    live: 'https://bookscans.vercel.app',
+  },
+  {
+    id: 'estateverse',
+    title: 'EstateVerse',
+    blurb: 'Full-stack property price and buyer-persona predictor served from a FastAPI model.',
+    stack: ['React', 'FastAPI', 'Scikit-learn', 'MongoDB'],
+    image: '/projects/Estate.png',
+    github: 'https://github.com/ashyou09/Realty-AI-Price-Persona-Predictor',
+    live: 'https://realestate-ml-model.vercel.app/',
+  },
+  {
+    id: 'photo-json',
+    title: 'Photo to JSON',
+    blurb: 'Pulls text out of an uploaded image and returns it as structured JSON.',
+    stack: ['React', 'OCR'],
+    image: '/projects/photo-json.png',
+    github: 'https://github.com/ashyou09/json.convertor',
+    live: 'https://ashyou09.github.io/json.convertor/',
+  },
+  {
+    id: 'sushi',
+    title: 'Japanese Sushi Site',
+    blurb: 'An early hand-written CSS build, kept because the motion work still holds up.',
+    stack: ['HTML', 'CSS', 'JavaScript'],
+    image: '/projects/sushi.png',
+    github: 'https://github.com/ashyou09/sushi_website_learn_html_css',
+    live: 'https://japanese-sushi-website.netlify.app/',
+  },
+];

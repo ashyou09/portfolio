@@ -1,114 +1,261 @@
-import { useEffect, useState } from 'react';
-import Button from '../components/Button';
-import personalInfo from '../data/personalInfo';
-import '../styles/Hero.css';
+import { Suspense, lazy, useCallback, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
+import { ArrowDownRight, FileText, ArrowsClockwise, Plus, Minus } from '@phosphor-icons/react';
+import Magnetic from '../components/Magnetic';
+import profile from '../data/profile';
+import { DATASETS, ARCHITECTURE_LIMITS, countParameters } from '../three/mlp';
+import '../styles/hero.css';
 
-/**
- * Hero Section Component
- * 
- * This component renders the hero section of the portfolio, which is the first section
- * visitors see. It includes a greeting, name, title, short bio, and call-to-action buttons.
- * 
- * Features:
- * - Animated text typing effect for the title
- * - Responsive design for all screen sizes
- * - Call-to-action buttons for important links
- * - Subtle background animation
- * 
- * @returns {JSX.Element} The Hero section component
- */
-function Hero() {
-  // State for animated typing effect
-  const [displayText, setDisplayText] = useState('');
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
+// The WebGL bundle is large and nothing above it depends on it, so it loads
+// after the copy has painted.
+const LiveNetwork = lazy(() => import('../three/LiveNetwork'));
 
-  // Text to be typed
-  const textToType = personalInfo.title;
+const DATASET_KEYS = Object.keys(DATASETS);
 
-  /**
-   * Animated typing effect for the title
-   */
-  useEffect(() => {
-    let currentIndex = 0;
-    let typingInterval;
+export default function Hero() {
+  const reduce = useReducedMotion();
+  const [dataset, setDataset] = useState('circles');
+  const [hidden, setHidden] = useState([4]);
+  const [annotate, setAnnotate] = useState('nodes');
+  const [shape, setShape] = useState('sphere');
+  const [resetKey, setResetKey] = useState(0);
+  const [stats, setStats] = useState({ epoch: 0, loss: 0, accuracy: 0 });
 
-    // Start typing effect
-    const startTyping = () => {
-      typingInterval = setInterval(() => {
-        if (currentIndex <= textToType.length) {
-          setDisplayText(textToType.substring(0, currentIndex));
-          currentIndex++;
-        } else {
-          clearInterval(typingInterval);
-          setIsTypingComplete(true);
-        }
-      }, 100); // Adjust speed as needed
-    };
+  const { minHiddenLayers, maxHiddenLayers, minUnits, maxUnits } = ARCHITECTURE_LIMITS;
+  const sizes = [2, ...hidden, 1];
+  const parameters = countParameters(sizes);
+  const nodeCount = sizes.reduce((sum, size) => sum + size, 0);
+  const edgeCount = sizes.slice(1).reduce((sum, size, i) => sum + size * sizes[i], 0);
 
-    // Start typing after a short delay
-    const initialDelay = setTimeout(() => {
-      startTyping();
-    }, 500);
+  // Annotations only fit on a small network. Say so rather than letting the
+  // labels pile into an unreadable heap.
+  const annotationHidden =
+    (annotate === 'nodes' && nodeCount > 18) || (annotate === 'weights' && edgeCount > 22);
 
-    // Clean up intervals on component unmount
-    return () => {
-      clearTimeout(initialDelay);
-      clearInterval(typingInterval);
-    };
-  }, [textToType]);
+  const addLayer = () =>
+    setHidden((layers) =>
+      layers.length >= maxHiddenLayers ? layers : [...layers, layers.at(-1) ?? 6]
+    );
+
+  const removeLayer = () =>
+    setHidden((layers) => (layers.length <= minHiddenLayers ? layers : layers.slice(0, -1)));
+
+  const changeUnits = (index, delta) =>
+    setHidden((layers) =>
+      layers.map((units, i) =>
+        i === index ? Math.min(maxUnits, Math.max(minUnits, units + delta)) : units
+      )
+    );
+
+  // Called from inside the render loop, so it must not change identity.
+  const onStats = useCallback((next) => setStats(next), []);
+
+  const line = (index) => ({
+    initial: reduce ? false : { y: '110%' },
+    animate: { y: '0%' },
+    transition: { duration: 0.9, delay: 0.1 + index * 0.09, ease: [0.16, 1, 0.3, 1] },
+  });
 
   return (
-    <section id="home" className="hero">
-      <div className="hero-background">
-        <div className="hero-overlay"></div>
-      </div>
+    <section className="hero" id="top">
+      <div className="hero__glow" aria-hidden="true" />
 
-      <div className="hero-content">
-        <div className="hero-text-container">
-          {/* Greeting */}
-          <p className="hero-greeting">Hello, I'm</p>
+      <div className="hero__inner shell">
+        <div className="hero__body">
+          <motion.p
+            className="eyebrow"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            {profile.role}
+          </motion.p>
 
-          {/* Name */}
-          <h1 className="hero-name">{personalInfo.name}</h1>
+          <h1 className="hero__title">
+            <span className="hero__line">
+              <motion.span {...line(0)}>{profile.headline[0]}</motion.span>
+            </span>
+            <span className="hero__line">
+              <motion.span {...line(1)}>
+                <em>{profile.headline[1]}</em>
+              </motion.span>
+            </span>
+          </h1>
 
-          {/* Animated Title */}
-          <div className="hero-title-container">
-            <h2 className="hero-title">
-              <span className="hero-title-text">{displayText}</span>
-              <span className={`hero-cursor ${isTypingComplete ? 'blink' : ''}`}>|</span>
-            </h2>
-          </div>
+          <motion.p
+            className="hero__sub"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.42 }}
+          >
+            {profile.subtext}
+          </motion.p>
 
-          {/* Short Bio */}
-          <p className="hero-bio">{personalInfo.bio}</p>
-
-          {/* Call-to-Action Buttons */}
-          <div className="hero-buttons">
-            <Button href="#projects" type="primary" size="large">
-              View My Work
-            </Button>
-            <Button href="#contact" type="outline" size="large">
-              Contact Me
-            </Button>
-          </div>
-
-          {/* Scroll Down Indicator */}
-          <div className="scroll-indicator">
-            <a href="#about" aria-label="Scroll to About section">
-              <div className="mouse">
-                <div className="wheel"></div>
-              </div>
-              <div className="arrow">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </a>
-          </div>
+          <motion.div
+            className="hero__actions"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.54 }}
+          >
+            <Magnetic>
+              <a className="btn btn--primary" href="#work">
+                View work
+                <ArrowDownRight size={17} weight="bold" />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.22}>
+              <a className="btn btn--ghost" href={profile.resume} target="_blank" rel="noreferrer">
+                <FileText size={17} />
+                Resume
+              </a>
+            </Magnetic>
+          </motion.div>
         </div>
+
+        <motion.div
+          className="lab-panel"
+          initial={reduce ? false : { opacity: 0, y: 26 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="lab-panel__bar">
+            <p className="lab-panel__title">
+              {[2, ...hidden, 1].join(' - ')} network, {parameters} parameters
+            </p>
+            <div className="lab-panel__sets" role="group" aria-label="Training dataset">
+              {DATASET_KEYS.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  className="chip"
+                  aria-pressed={dataset === key}
+                  onClick={() => setDataset(key)}
+                >
+                  {DATASETS[key].label}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="chip chip--icon"
+                onClick={() => setResetKey((value) => value + 1)}
+                aria-label="Reinitialise the weights and train again"
+              >
+                <ArrowsClockwise size={14} weight="bold" />
+              </button>
+            </div>
+          </div>
+
+          <div className="lab-panel__stage">
+            <Suspense
+              fallback={
+                <div className="lab-panel__loading">
+                  <span>Initialising weights</span>
+                  <div className="lab__bar" />
+                </div>
+              }
+            >
+              <LiveNetwork
+                dataset={dataset}
+                hidden={hidden}
+                annotate={annotate}
+                shape={shape}
+                resetKey={resetKey}
+                onStats={onStats}
+              />
+            </Suspense>
+          </div>
+
+          <div className="lab-panel__arch">
+            <span className="lab-panel__archlabel">Hidden layers</span>
+
+            <div className="lab-panel__layers">
+              {hidden.map((units, index) => (
+                // Layers have no identity beyond their position, so the index
+                // is the only key available here.
+                <span className="unit" key={index}>
+                  <button
+                    type="button"
+                    onClick={() => changeUnits(index, -1)}
+                    disabled={units <= minUnits}
+                    aria-label={`Remove a neuron from hidden layer ${index + 1}`}
+                  >
+                    <Minus size={11} weight="bold" />
+                  </button>
+                  <b>{units}</b>
+                  <button
+                    type="button"
+                    onClick={() => changeUnits(index, 1)}
+                    disabled={units >= maxUnits}
+                    aria-label={`Add a neuron to hidden layer ${index + 1}`}
+                  >
+                    <Plus size={11} weight="bold" />
+                  </button>
+                </span>
+              ))}
+              {hidden.length === 0 && <span className="unit unit--empty">none</span>}
+            </div>
+
+            <label className="lab-panel__annotate">
+              <span>Shape</span>
+              <select value={shape} onChange={(event) => setShape(event.target.value)}>
+                <option value="sphere">Spheres</option>
+                <option value="cube">Cubes</option>
+                <option value="diamond">Diamonds</option>
+              </select>
+            </label>
+
+            <label className="lab-panel__annotate">
+              <span>Show</span>
+              <select value={annotate} onChange={(event) => setAnnotate(event.target.value)}>
+                <option value="off">Nothing</option>
+                <option value="nodes">Neuron labels</option>
+                <option value="weights">Weight values</option>
+              </select>
+            </label>
+
+            <div className="lab-panel__depth">
+              <button
+                type="button"
+                className="chip"
+                onClick={removeLayer}
+                disabled={hidden.length <= minHiddenLayers}
+              >
+                <Minus size={11} weight="bold" /> Layer
+              </button>
+              <button
+                type="button"
+                className="chip"
+                onClick={addLayer}
+                disabled={hidden.length >= maxHiddenLayers}
+              >
+                <Plus size={11} weight="bold" /> Layer
+              </button>
+            </div>
+          </div>
+
+          {annotationHidden && (
+            <p className="lab-panel__hint">
+              Too many {annotate === 'weights' ? 'connections' : 'neurons'} to label. Drop a layer
+              or shrink one to read them.
+            </p>
+          )}
+
+          <dl className="lab-panel__readout">
+            <div>
+              <dt>Step</dt>
+              <dd>{stats.epoch.toLocaleString()}</dd>
+            </div>
+            <div>
+              <dt>Loss</dt>
+              <dd>{stats.loss.toFixed(3)}</dd>
+            </div>
+            <div>
+              <dt>Batch accuracy</dt>
+              <dd>{Math.round(stats.accuracy * 100)}%</dd>
+            </div>
+          </dl>
+        </motion.div>
       </div>
     </section>
   );
 }
-
-export default Hero;

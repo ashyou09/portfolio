@@ -1,0 +1,154 @@
+.lab {
+  position: relative;
+  padding-block: var(--section-y) 0;
+  border-top: 1px solid var(--line);
+}
+
+.lab__head {
+  margin-bottom: 2.5rem;
+  max-width: 62ch;
+}
+
+.lab__stage {
+  position: relative;
+  height: clamp(420px, 74vh, 760px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #070a10;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.lab__stage:active {
+  cursor: grabbing;
+}
+
+.lab__overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: var(--z-content);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.75rem) var(--gutter);
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(7, 10, 16, 0.85), transparent);
+}
+
+.lab__readout {
+  display: flex;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--fg-3);
+}
+
+.lab__readout b {
+  display: block;
+  color: var(--fg);
+  font-weight: 400;
+  font-size: 14px;
+  margin-top: 0.2rem;
+}
+
+.lab__controls {
+  display: flex;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.lab__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: rgba(10, 11, 13, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 13px;
+  color: var(--fg-2);
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+
+.lab__toggle[aria-pressed='true'] {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.lab__toggle:hover {
+  border-color: var(--accent-line);
+}
+
+.lab__toggle:active {
+  transform: scale(0.98);
+}
+
+.lab__hint {
+  padding-block: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--fg-3);
+}
+
+/* Loading and failure states share the stage box so nothing shifts. */
+.lab__state {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--fg-3);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.lab__state strong {
+  font-weight: 400;
+  color: var(--fg-2);
+}
+
+.lab__bar {
+  width: 180px;
+  height: 2px;
+  margin-inline: auto;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.lab__bar::after {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--accent);
+  animation: lab-sweep 1.4s var(--ease) infinite;
+}
+
+@keyframes lab-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+
+@media (max-width: 720px) {
+  .lab__overlay {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .lab__readout {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}

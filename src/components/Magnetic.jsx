@@ -1,37 +1,48 @@
-import { useRef, useState } from 'react';
-import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { useRef } from 'react';
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'motion/react';
 
-const Magnetic = ({ children }) => {
-    const ref = useRef(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+/**
+ * Pulls its child toward the pointer on hover. Motivation: tactile feedback on
+ * the two primary CTAs, so the page confirms the pointer is on target.
+ *
+ * Position is held in motion values, never React state: a state write per
+ * pointermove would re-render the tree on every frame.
+ */
+export default function Magnetic({ children, strength = 0.32, className }) {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
 
-    const handleMouse = (e) => {
-        const { clientX, clientY } = e;
-        const { height, width, left, top } = ref.current.getBoundingClientRect();
-        const middleX = clientX - (left + width / 2);
-        const middleY = clientY - (top + height / 2);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 18, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 220, damping: 18, mass: 0.4 });
 
-        setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
-    };
+  if (reduce) {
+    return <div className={className}>{children}</div>;
+  }
 
-    const reset = () => {
-        setPosition({ x: 0, y: 0 });
-    };
+  const onMove = (event) => {
+    const node = ref.current;
+    if (!node) return;
+    const box = node.getBoundingClientRect();
+    x.set((event.clientX - (box.left + box.width / 2)) * strength);
+    y.set((event.clientY - (box.top + box.height / 2)) * strength);
+  };
 
-    const { x, y } = position;
+  const onLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
-    return (
-        <motion.div
-            style={{ position: 'relative' }}
-            ref={ref}
-            onMouseMove={handleMouse}
-            onMouseLeave={reset}
-            animate={{ x, y }}
-            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-        >
-            {children}
-        </motion.div>
-    );
-};
-
-export default Magnetic;
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ x: sx, y: sy, display: 'inline-flex' }}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+    >
+      {children}
+    </motion.div>
+  );
+}

@@ -1,112 +1,52 @@
-import Section from '../components/Section';
-import Button from '../components/Button';
-import personalInfo from '../data/personalInfo';
-import '../styles/About.css';
+import Reveal from '../components/Reveal';
+import profile from '../data/profile';
+import '../styles/about.css';
 
-/**
- * About Section Component
- * 
- * This component renders the About section of the portfolio, which provides
- * detailed information about the portfolio owner, including:
- * - Professional background
- * - Personal interests
- * - Education and experience
- * - Resume download
- * 
- * @returns {JSX.Element} The About section component
- */
-function About() {
+export default function About() {
+  const { about, education, stats } = profile;
+
   return (
-    <Section
-      id="about"
-      title="About Me"
-      subtitle="Get to know more about me and my background"
-    >
-      <div className="about-container">
-        {/* Profile Image */}
-        <div className="about-image-container">
-          <div className="about-image-wrapper">
-            {/* Replace with actual image path */}
-            <img
-              src="/images/profile.jpg"
-              alt={personalInfo.name}
-              className="about-image"
-              // Fallback if image doesn't load
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = 'https://via.placeholder.com/400x500?text=Profile+Image';
-              }}
-            />
-          </div>
-          <div className="about-image-backdrop"></div>
+    <section className="section section--hairline" id="about">
+      <div className="shell about__grid">
+        <div className="about__copy">
+          <Reveal as="h2" className="h2 about__title">
+            Reinforcement learning
+            <br />
+            meets language models.
+          </Reveal>
+          {about.map((paragraph, index) => (
+            <Reveal key={paragraph.slice(0, 24)} as="p" delay={0.08 + index * 0.08}>
+              {paragraph}
+            </Reveal>
+          ))}
         </div>
 
-        {/* About Content */}
-        <div className="about-content">
-          <h3 className="about-greeting">Hello there! I'm {personalInfo.name}</h3>
+        <Reveal className="about__aside" delay={0.12}>
+          <div className="about__edu">
+            <h3>{education.degree}</h3>
+            <p>{education.school}</p>
+            <dl>
+              <div>
+                <dt>Period</dt>
+                <dd>{education.period}</dd>
+              </div>
+              <div>
+                <dt>Standing</dt>
+                <dd>{education.grade}</dd>
+              </div>
+            </dl>
+          </div>
 
-          {/* Long Bio - Split into paragraphs */}
-          <div className="about-bio">
-            {personalInfo.longBio.split('\n\n').map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+          <div className="about__stats">
+            {stats.map((stat) => (
+              <div className="about__stat" key={stat.label}>
+                <b>{stat.value}</b>
+                <span>{stat.label}</span>
+              </div>
             ))}
           </div>
-
-          {/* Personal Info List */}
-          <div className="about-info">
-            <div className="about-info-item">
-              <span className="about-info-label">Name:</span>
-              <span className="about-info-value">{personalInfo.name}</span>
-            </div>
-
-            <div className="about-info-item">
-              <span className="about-info-label">Email:</span>
-              <span className="about-info-value">
-                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
-              </span>
-            </div>
-
-            {personalInfo.phone && (
-              <div className="about-info-item">
-                <span className="about-info-label">Phone:</span>
-                <span className="about-info-value">
-                  <a href={`tel:${personalInfo.phone}`}>{personalInfo.phone}</a>
-                </span>
-              </div>
-            )}
-
-            <div className="about-info-item">
-              <span className="about-info-label">Location:</span>
-              <span className="about-info-value">{personalInfo.location}</span>
-            </div>
-          </div>
-
-          {/* Interests */}
-          <div className="about-interests">
-            <h4 className="about-interests-title">My Interests</h4>
-            <ul className="about-interests-list">
-              {personalInfo.interests.map((interest, index) => (
-                <li key={index} className="about-interest-item">{interest}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resume Button */}
-          {personalInfo.resumeLink && (
-            <div className="about-resume">
-              <Button
-                href={personalInfo.resumeLink}
-                type="primary"
-                download="Resume-Ashutosh_Singh.pdf"
-              >
-                Download Resume
-              </Button>
-            </div>
-          )}
-        </div>
+        </Reveal>
       </div>
-    </Section>
+    </section>
   );
 }
-
-export default About;
