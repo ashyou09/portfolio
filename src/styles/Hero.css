@@ -299,9 +299,28 @@
   .hero__sub {
     max-width: 46ch;
   }
+
+  /* Breaking the frame is a desktop flourish. On a narrow screen there is no
+     margin to break into, and the bleed just clips the input nodes, so the
+     model sits inside its panel instead. */
+  .lab-panel__canvas {
+    inset: 0;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .lab-panel {
+    overflow: hidden;
+  }
 }
 
 @media (max-width: 560px) {
+  /* Pulled back on a phone, the model sits in the middle third of a tall
+     stage, so the stage no longer needs to be tall. */
+  .lab-panel__stage {
+    height: clamp(280px, 42vh, 360px);
+  }
+
   .lab-panel__bar {
     flex-direction: column;
     align-items: flex-start;
@@ -463,4 +482,20 @@
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--fg-3);
+}
+
+
+/* Loss curve tucked behind the number it belongs to. */
+.lab-panel__loss {
+  position: relative;
+  overflow: hidden;
+}
+
+.spark {
+  position: absolute;
+  inset: auto 0.75rem 0.45rem 0.75rem;
+  height: 26px;
+  width: calc(100% - 1.5rem);
+  opacity: 0.42;
+  pointer-events: none;
 }

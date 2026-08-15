@@ -381,20 +381,25 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
  * as the model assembling rather than appearing.
  */
 function CameraRig({ trigger, animate }) {
-  const { camera } = useThree();
-  const rest = useRef(camera.position.z);
+  const { camera, size } = useThree();
+  const base = useRef(camera.position.z);
   const previous = useRef(null);
+
+  // A perspective camera's fov is vertical, so a portrait canvas sees far less
+  // width. Without this the network runs off both sides on a phone.
+  const aspect = size.width / Math.max(size.height, 1);
+  const rest = base.current * (aspect < 0.85 ? 1.95 : aspect < 1.25 ? 1.42 : 1);
 
   useEffect(() => {
     if (previous.current === trigger) return;
     previous.current = trigger;
-    camera.position.z = rest.current * (animate ? 1.55 : 1);
-  }, [trigger, camera, animate]);
+    camera.position.z = rest * (animate ? 1.16 : 1);
+  }, [trigger, camera, animate, rest]);
 
   useFrame(() => {
-    const distance = rest.current - camera.position.z;
+    const distance = rest - camera.position.z;
     if (Math.abs(distance) < 0.002) return;
-    camera.position.z += distance * 0.055;
+    camera.position.z += distance * 0.022;
     camera.updateProjectionMatrix();
   });
 

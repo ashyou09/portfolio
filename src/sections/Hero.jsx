@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowDownRight, FileText, ArrowsClockwise, Plus, Minus } from '@phosphor-icons/react';
 import Magnetic from '../components/Magnetic';
@@ -19,6 +19,7 @@ export default function Hero() {
   const [annotate, setAnnotate] = useState('nodes');
   const [resetKey, setResetKey] = useState(0);
   const [stats, setStats] = useState({ epoch: 0, loss: 0, accuracy: 0 });
+  const [history, setHistory] = useState([]);
 
   const { minHiddenLayers, maxHiddenLayers, minUnits, maxUnits } = ARCHITECTURE_LIMITS;
   const sizes = [2, ...hidden, 1];
@@ -47,7 +48,26 @@ export default function Hero() {
     );
 
   // Called from inside the render loop, so it must not change identity.
-  const onStats = useCallback((next) => setStats(next), []);
+  const onStats = useCallback((next) => {
+    setStats(next);
+    setHistory((values) => [...values.slice(-59), next.loss]);
+  }, []);
+
+  // Reset the curve whenever the run restarts.
+  useEffect(() => setHistory([]), [dataset, resetKey, hidden.length]);
+
+  // Loss is unbounded above, so the curve is scaled to its own run.
+  const curve = (() => {
+    if (history.length < 2) return '';
+    const peak = Math.max(...history, 0.12);
+    return history
+      .map((value, i) => {
+        const x = (i / (history.length - 1)) * 100;
+        const y = 26 - Math.min(value / peak, 1) * 24;
+        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+      })
+      .join(' ');
+  })();
 
   const line = (index) => ({
     initial: reduce ? false : { y: '110%' },
@@ -235,9 +255,15 @@ export default function Hero() {
               <dt>Step</dt>
               <dd>{stats.epoch.toLocaleString()}</dd>
             </div>
-            <div>
+            <div className="lab-panel__loss">
               <dt>Loss</dt>
               <dd>{stats.loss.toFixed(3)}</dd>
+              {curve && (
+                <svg className="spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
+                  <path d={curve} fill="none" stroke="var(--accent)" strokeWidth="1.4"
+                    vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </div>
             <div>
               <dt>Batch accuracy</dt>
