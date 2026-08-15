@@ -1,0 +1,143 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  height: 68px;
+  display: flex;
+  align-items: center;
+  transition: background 0.35s var(--ease), border-color 0.35s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+
+.nav[data-stuck='true'] {
+  background: rgba(10, 11, 13, 0.72);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border-bottom-color: var(--line);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .nav[data-stuck='true'] {
+    background: var(--bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.nav__inner {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.nav__mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.nav__mark img {
+  flex: none;
+  border-radius: 6px;
+}
+
+.nav__mark b {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.nav__mark span {
+  color: var(--fg-3);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2rem);
+  font-size: 14px;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.nav__links a {
+  position: relative;
+  padding-block: 0.35rem;
+  transition: color 0.25s var(--ease);
+}
+
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+
+.nav__links a:hover {
+  color: var(--fg);
+}
+
+.nav__links a:hover::after,
+.nav__links a[aria-current='true']::after {
+  transform: scaleX(1);
+}
+
+.nav__links a[aria-current='true'] {
+  color: var(--fg);
+}
+
+.nav__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.05rem;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  color: var(--fg);
+  white-space: nowrap;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+.nav__cta:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-dim);
+}
+
+.nav__cta:active {
+  transform: scale(0.98);
+}
+
+/* Under 860px the section links collapse; the single CTA carries the nav. */
+@media (max-width: 860px) {
+  .nav__links {
+    display: none;
+  }
+}
+
+/* On a phone the name alone has to fit beside the CTA, so the role drops. */
+@media (max-width: 560px) {
+  .nav__mark span {
+    display: none;
+  }
+
+  .nav__cta {
+    padding-inline: 0.9rem;
+  }
+}

@@ -1,0 +1,92 @@
+/*
+ * A glass lens rather than a painted dot. It picks up whatever is beneath it,
+ * lifts the saturation and brightness slightly, and carries an inner highlight
+ * so the rim reads as an edge. Nothing underneath changes, so the design is
+ * untouched when the pointer is elsewhere.
+ */
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  will-change: transform;
+
+  border: 1px solid rgba(240, 162, 46, 0.55);
+  background: rgba(240, 162, 46, 0.05);
+  backdrop-filter: blur(0.5px) saturate(155%) brightness(122%);
+  -webkit-backdrop-filter: blur(0.5px) saturate(155%) brightness(122%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 22px rgba(240, 162, 46, 0.16);
+}
+
+/* Over body copy the lens turns neutral and magnifies a touch more, so text
+   stays readable instead of taking on a colour cast. */
+.cursor[data-variant='text'] {
+  border-color: rgba(233, 234, 236, 0.32);
+  background: rgba(233, 234, 236, 0.035);
+  backdrop-filter: blur(0.3px) saturate(112%) brightness(132%);
+  -webkit-backdrop-filter: blur(0.3px) saturate(112%) brightness(132%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.cursor[data-variant='link'] {
+  background: rgba(240, 162, 46, 0.14);
+  backdrop-filter: blur(1px) saturate(170%) brightness(118%);
+  -webkit-backdrop-filter: blur(1px) saturate(170%) brightness(118%);
+}
+
+/* Over project media it becomes an opaque amber chip carrying a label. */
+.cursor[data-variant='media'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 8px 30px rgba(240, 162, 46, 0.3);
+}
+
+.cursor__label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+
+/* Backdrop filters are the whole effect. Without support, or when the viewer
+   asks for less transparency, fall back to a plain tinted ring. */
+@supports not (backdrop-filter: blur(1px)) {
+  .cursor {
+    background: rgba(240, 162, 46, 0.12);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cursor {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(240, 162, 46, 0.14);
+  }
+}
+
+/* No lens on touch or coarse pointers. */
+@media not all and (hover: hover) and (pointer: fine) {
+  .cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
+  }
+}

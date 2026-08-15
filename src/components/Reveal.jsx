@@ -1,32 +1,32 @@
-import { useRef, useEffect } from 'react';
-import { motion, useInView, useAnimation } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import { motion, useReducedMotion } from 'motion/react';
 
-const Reveal = ({ children, width = "fit-content" }) => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true });
-    const mainControls = useAnimation();
+/**
+ * Scroll-reveal wrapper. Motivation: it sequences a section's content in
+ * reading order so the eye lands on the headline before the detail.
+ * Collapses to a static render under prefers-reduced-motion.
+ */
+export default function Reveal({
+  children,
+  as = 'div',
+  delay = 0,
+  y = 22,
+  amount = 0.25,
+  className,
+  ...rest
+}) {
+  const reduce = useReducedMotion();
+  const Tag = motion[as] || motion.div;
 
-    useEffect(() => {
-        if (isInView) {
-            mainControls.start("visible");
-        }
-    }, [isInView, mainControls]);
-
-    return (
-        <div ref={ref} style={{ position: "relative", width, overflow: "hidden" }}>
-            <motion.div
-                variants={{
-                    hidden: { opacity: 0, y: 75 },
-                    visible: { opacity: 1, y: 0 },
-                }}
-                initial="hidden"
-                animate={mainControls}
-                transition={{ duration: 0.5, delay: 0.25 }}
-            >
-                {children}
-            </motion.div>
-        </div>
-    );
-};
-
-export default Reveal;
+  return (
+    <Tag
+      className={className}
+      initial={reduce ? false : { opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount }}
+      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}

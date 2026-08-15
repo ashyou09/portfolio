@@ -1,110 +1,40 @@
-import { useEffect } from 'react';
-import Header from './components/Header';
+import Nav from './components/Nav';
+import Cursor from './components/Cursor';
 import Footer from './components/Footer';
 import Hero from './sections/Hero';
+import StackMarquee from './sections/StackMarquee';
 import About from './sections/About';
-import Skills from './sections/Skills';
-import Projects from './sections/Projects';
+import Experience from './sections/Experience';
+import Work from './sections/Work';
+import Transformer from './sections/Transformer';
+import Lab from './sections/Lab';
+import Certifications from './sections/Certifications';
 import Contact from './sections/Contact';
-import './App.css';
 
-/**
- * App Component
- * 
- * This is the main component that integrates all sections of the portfolio.
- * It includes:
- * - Header with navigation
- * - Hero section
- * - About section
- * - Skills section
- * - Projects section
- * - Contact section
- * - Footer
- * 
- * @returns {JSX.Element} The complete portfolio application
- */
-function App() {
-  /**
-   * Smooth scroll to section when clicking on navigation links
-   */
-  useEffect(() => {
-    // Get all anchor links
-    const anchorLinks = document.querySelectorAll('a[href^="#"]');
-
-    // Add click event listener to each anchor link
-    anchorLinks.forEach(link => {
-      link.addEventListener('click', function (e) {
-        // Prevent default anchor click behavior
-        e.preventDefault();
-
-        // Get the target section id from the href attribute
-        const targetId = this.getAttribute('href');
-
-        // If the target is just "#", scroll to top
-        if (targetId === '#') {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-          return;
-        }
-
-        // Find the target element
-        const targetElement = document.querySelector(targetId);
-
-        // If target element exists, scroll to it
-        if (targetElement) {
-          // Get header height for offset (with a small extra padding)
-          const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-          const scrollPadding = 20;
-
-          // Calculate the target position
-          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - scrollPadding;
-
-          // Scroll to the target position
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-
-    // Clean up event listeners on component unmount
-    return () => {
-      anchorLinks.forEach(link => {
-        link.removeEventListener('click', () => { });
-      });
-    };
-  }, []);
-
+export default function App() {
   return (
-    <div className="app">
-      {/* Header */}
-      <Header />
+    <>
+      <a className="skip-link" href="#about">
+        Skip to content
+      </a>
 
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Hero Section */}
+      <Nav />
+
+      <main>
         <Hero />
-
-        {/* About Section */}
+        <StackMarquee />
         <About />
-
-        {/* Skills Section */}
-        <Skills />
-
-        {/* Projects Section */}
-        <Projects />
-
-        {/* Contact Section */}
+        <Experience />
+        <Work />
+        <Transformer />
+        <Lab />
+        <Certifications />
         <Contact />
       </main>
 
-      {/* Footer */}
       <Footer />
-    </div>
+      <Cursor />
+      <div className="grain" aria-hidden="true" />
+    </>
   );
 }
-
-export default App;
