@@ -344,7 +344,7 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
         nodeSlots.map((slot) => (
           <Html
             key={`label-${slot.layer}-${slot.unit}`}
-            position={[slot.position.x, slot.position.y + 0.26, slot.position.z]}
+            position={[slot.position.x, slot.position.y + 0.22, slot.position.z]}
             center
             distanceFactor={9}
             style={{ pointerEvents: 'none' }}
@@ -375,35 +375,67 @@ function Scene({ dataset, hidden, learningRate, annotate, resetKey, animate, onS
   );
 }
 
-/**
- * Eases the camera to its resting distance instead of cutting to it. On mount
- * and on every rebuild it starts pulled back and settles forward, which reads
- * as the model assembling rather than appearing.
- */
-function CameraRig({ trigger, animate }) {
-  const { camera, size } = useThree();
-  const base = useRef(camera.position.z);
-  const previous = useRef(null);
+// Distance the camera sits from the model on a landscape canvas.
+const BASE_RADIUS = 4.86;
 
-  // A perspective camera's fov is vertical, so a portrait canvas sees far less
-  // width. Without this the network runs off both sides on a phone.
+/**
+ * Owns the orbit radius, and owns it exclusively.
+ *
+ * The camera must never be driven by writing position.z: as the controls
+ * auto-rotate, z shrinks while x grows, so forcing z back to a fixed value
+ * inflates the real radius a little every frame and the model walks away to
+ * nothing. Distance is set with setLength, and locking min and max distance to
+ * the same value means nothing can drift it afterwards.
+ *
+ * A perspective camera's fov is vertical, so a portrait canvas sees far less
+ * width and needs more distance to fit the same model.
+ */
+function Rig({ animate }) {
+  const { camera, size } = useThree();
   const aspect = size.width / Math.max(size.height, 1);
-  const rest = base.current * (aspect < 0.85 ? 1.95 : aspect < 1.25 ? 1.42 : 1);
+  const radius = BASE_RADIUS * (aspect < 0.85 ? 1.95 : aspect < 1.25 ? 1.42 : 1);
 
   useEffect(() => {
-    if (previous.current === trigger) return;
-    previous.current = trigger;
-    camera.position.z = rest * (animate ? 1.16 : 1);
-  }, [trigger, camera, animate, rest]);
+    camera.position.setLength(radius);
+    camera.updateProjectionMatrix();
+  }, [radius, camera]);
+
+  return (
+    <OrbitControls
+      enablePan={false}
+      enableZoom={false}
+      enableDamping
+      dampingFactor={0.07}
+      minDistance={radius}
+      maxDistance={radius}
+      autoRotate={animate}
+      autoRotateSpeed={0.3}
+      minPolarAngle={Math.PI / 4.6}
+      maxPolarAngle={Math.PI / 2.15}
+      rotateSpeed={0.45}
+    />
+  );
+}
+
+/**
+ * The settle-in on load and rebuild. Scaling the model is equivalent to moving
+ * the camera here and, unlike the camera, nothing else is writing to it.
+ */
+function Intro({ trigger, animate, children }) {
+  const group = useRef(null);
+  const scale = useRef(1);
+
+  useEffect(() => {
+    scale.current = animate ? 0.84 : 1;
+  }, [trigger, animate]);
 
   useFrame(() => {
-    const distance = rest - camera.position.z;
-    if (Math.abs(distance) < 0.002) return;
-    camera.position.z += distance * 0.022;
-    camera.updateProjectionMatrix();
+    if (!group.current) return;
+    scale.current += (1 - scale.current) * 0.035;
+    group.current.scale.setScalar(scale.current);
   });
 
-  return null;
+  return <group ref={group}>{children}</group>;
 }
 
 export default function LiveNetwork({
@@ -422,31 +454,21 @@ export default function LiveNetwork({
       camera={{ position: [0, 1.7, 4.55], fov: 54 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >
-      <group rotation={[0, -0.24, 0]}>
-        <Scene
-          dataset={dataset}
-          hidden={hidden}
-          learningRate={learningRate}
-          annotate={annotate}
-          resetKey={resetKey}
-          animate={!reduce}
-          onStats={onStats}
-        />
-      </group>
+      <Intro trigger={`${dataset}-${hidden.join('-')}-${resetKey}`} animate={!reduce}>
+        <group rotation={[0, -0.24, 0]} position={[0, -0.62, 0]}>
+          <Scene
+            dataset={dataset}
+            hidden={hidden}
+            learningRate={learningRate}
+            annotate={annotate}
+            resetKey={resetKey}
+            animate={!reduce}
+            onStats={onStats}
+          />
+        </group>
+      </Intro>
 
-      <CameraRig trigger={`${dataset}-${hidden.join('-')}-${resetKey}`} animate={!reduce} />
-
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        enableDamping
-        dampingFactor={0.07}
-        autoRotate={!reduce}
-        autoRotateSpeed={0.3}
-        minPolarAngle={Math.PI / 4.6}
-        maxPolarAngle={Math.PI / 2.15}
-        rotateSpeed={0.45}
-      />
+      <Rig animate={!reduce} />
     </Canvas>
   );
 }
