@@ -421,17 +421,20 @@ function Rig({ animate }) {
  * The settle-in on load and rebuild. Scaling the model is equivalent to moving
  * the camera here and, unlike the camera, nothing else is writing to it.
  */
-function Intro({ trigger, animate, children }) {
+function Intro({ trigger, animate, zoom, children }) {
   const group = useRef(null);
-  const scale = useRef(1);
+  const scale = useRef(zoom);
 
   useEffect(() => {
-    scale.current = animate ? 0.84 : 1;
+    scale.current = animate ? zoom * 0.84 : zoom;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger, animate]);
 
   useFrame(() => {
     if (!group.current) return;
-    scale.current += (1 - scale.current) * 0.035;
+    // Eases toward the requested zoom, so dragging the slider glides rather
+    // than snapping, and the settle-in on rebuild still plays.
+    scale.current += (zoom - scale.current) * 0.09;
     group.current.scale.setScalar(scale.current);
   });
 
@@ -444,6 +447,7 @@ export default function LiveNetwork({
   learningRate = 0.12,
   annotate = 'off',
   resetKey = 0,
+  zoom = 1,
   onStats,
 }) {
   const reduce = useReducedMotion();
@@ -454,7 +458,7 @@ export default function LiveNetwork({
       camera={{ position: [0, 1.7, 4.55], fov: 54 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >
-      <Intro trigger={`${dataset}-${hidden.join('-')}-${resetKey}`} animate={!reduce}>
+      <Intro trigger={`${dataset}-${hidden.join('-')}-${resetKey}`} animate={!reduce} zoom={zoom}>
         <group rotation={[0, -0.24, 0]} position={[0, -0.62, 0]}>
           <Scene
             dataset={dataset}

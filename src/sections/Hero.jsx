@@ -1,6 +1,13 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowDownRight, FileText, ArrowsClockwise, Plus, Minus } from '@phosphor-icons/react';
+import {
+  ArrowDownRight,
+  FileText,
+  ArrowsClockwise,
+  Plus,
+  Minus,
+  MagnifyingGlass,
+} from '@phosphor-icons/react';
 import Magnetic from '../components/Magnetic';
 import profile from '../data/profile';
 import { DATASETS, ARCHITECTURE_LIMITS, countParameters } from '../three/mlp';
@@ -18,6 +25,7 @@ export default function Hero() {
   const [hidden, setHidden] = useState([4]);
   const [annotate, setAnnotate] = useState('nodes');
   const [resetKey, setResetKey] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const [stats, setStats] = useState({ epoch: 0, loss: 0, accuracy: 0 });
   const [history, setHistory] = useState([]);
 
@@ -178,6 +186,7 @@ export default function Hero() {
                 hidden={hidden}
                 annotate={annotate}
                 resetKey={resetKey}
+                zoom={zoom}
                 onStats={onStats}
               />
             </Suspense>
@@ -221,6 +230,20 @@ export default function Hero() {
                 <option value="nodes">Neuron labels</option>
                 <option value="weights">Weight values</option>
               </select>
+            </label>
+
+            <label className="lab-panel__zoom">
+              <MagnifyingGlass size={13} weight="bold" />
+              <span className="visually-hidden">Model size</span>
+              <input
+                type="range"
+                min="0.55"
+                max="1.8"
+                step="0.05"
+                value={zoom}
+                onChange={(event) => setZoom(Number(event.target.value))}
+              />
+              <b>{zoom.toFixed(2)}x</b>
             </label>
 
             <div className="lab-panel__depth">

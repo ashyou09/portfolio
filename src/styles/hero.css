@@ -499,3 +499,66 @@
   opacity: 0.42;
   pointer-events: none;
 }
+
+
+/* --- model size ----------------------------------------------------------- */
+
+.lab-panel__zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--fg-3);
+}
+
+.lab-panel__zoom b {
+  min-width: 3.1rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-panel__zoom input[type='range'] {
+  width: clamp(70px, 9vw, 116px);
+  height: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--line-2);
+  border-radius: var(--r-pill);
+  cursor: ew-resize;
+}
+
+.lab-panel__zoom input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  border: 0;
+  cursor: ew-resize;
+  transition: transform 0.16s var(--ease-out);
+}
+
+.lab-panel__zoom input[type='range']::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  border: 0;
+  cursor: ew-resize;
+}
+
+.lab-panel__zoom input[type='range']:hover::-webkit-slider-thumb {
+  transform: scale(1.18);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
