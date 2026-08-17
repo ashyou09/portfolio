@@ -112,7 +112,14 @@ export function createNetwork(hidden = [8, 8]) {
   for (let l = 1; l < sizes.length; l += 1) {
     const fanIn = sizes[l - 1];
     const size = sizes[l];
-    const scale = Math.sqrt(1 / fanIn);
+    // Xavier, with the gain tanh wants. The old sqrt(1/fanIn) shrinks the
+    // signal a little at every layer, which one or two layers absorb and four
+    // do not: by the fourth the activations sit in the flat part of tanh, the
+    // gradient that reaches layer one is nothing, and the run never leaves its
+    // initial guess. sqrt(2/(fanIn+fanOut)) keeps the variance steady on the
+    // way forward and back, and the 5/3 is the correction for tanh's slope.
+    const last = l === sizes.length - 1;
+    const scale = (last ? 1 : 5 / 3) * Math.sqrt(2 / (fanIn + size));
     layers.push({
       weights: Array.from({ length: size }, () =>
         Array.from({ length: fanIn }, () => randn() * scale)
@@ -143,10 +150,21 @@ export function forward(net, input) {
   return activations[0];
 }
 
+/** Gradients above this are clipped. Deep tanh stacks occasionally throw one
+ *  enormous delta, and a single one is enough to fling every weight in the
+ *  model somewhere it cannot come back from — the boundary goes to noise and
+ *  the loss never recovers. */
+const CLIP = 2;
+
 /** One SGD step over a shuffled minibatch. Returns mean loss and accuracy. */
 export function trainStep(net, points, learningRate = 0.16, batch = 24) {
   let loss = 0;
   let correct = 0;
+
+  // Each layer contributes its own share of the update, so a step that suits
+  // one hidden layer overshoots with four. Scaling by sqrt of the depth is
+  // what keeps the same dial usable across the whole range the panel offers.
+  const rate = learningRate / Math.sqrt(net.layers.length);
 
   for (let b = 0; b < batch; b += 1) {
     const point = points[Math.floor(Math.random() * points.length)];
@@ -169,7 +187,8 @@ export function trainStep(net, points, learningRate = 0.16, batch = 24) {
         for (let m = 0; m < next.deltas.length; m += 1) {
           sum += next.weights[m][n] * next.deltas[m];
         }
-        layer.deltas[n] = sum * dtanh(layer.outputs[n]);
+        const grad = sum * dtanh(layer.outputs[n]);
+        layer.deltas[n] = Math.min(CLIP, Math.max(-CLIP, grad));
       }
     }
 
@@ -180,9 +199,9 @@ export function trainStep(net, points, learningRate = 0.16, batch = 24) {
         const delta = layer.deltas[n];
         const row = layer.weights[n];
         for (let w = 0; w < row.length; w += 1) {
-          row[w] -= learningRate * delta * previous[w];
+          row[w] -= rate * delta * previous[w];
         }
-        layer.biases[n] -= learningRate * delta;
+        layer.biases[n] -= rate * delta;
       }
     }
   }
