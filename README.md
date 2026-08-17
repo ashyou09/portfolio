@@ -12,7 +12,7 @@
 
 A performance-first portfolio featuring **live neural network training in the browser**, an **interactive 3D transformer block**, and a **digital twin of Visakhapatnam Port** — all running in real-time WebGL.
 
-[**View Live →**](https://ashutosh-singh-portfolio.vercel.app)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;[**Resume**](https://ashutosh-singh-portfolio.vercel.app/resume.pdf)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;[**LinkedIn**](https://www.linkedin.com/in/ashutosh-singh2024)
+[**View Live →**](https://ashutosh-portfolio09.vercel.app)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;[**Resume**](https://ashutosh-portfolio09.vercel.app/resume.pdf)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;[**LinkedIn**](https://www.linkedin.com/in/ashutosh-singh2024)
 
 </div>
 
