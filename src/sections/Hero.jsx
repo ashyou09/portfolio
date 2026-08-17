@@ -1,81 +1,30 @@
-import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import {
-  ArrowDownRight,
-  FileText,
-  ArrowsClockwise,
-  Plus,
-  Minus,
-  MagnifyingGlass,
-} from '@phosphor-icons/react';
+import { ArrowDownRight, FileText } from '@phosphor-icons/react';
+import BlackHole from '../components/BlackHole';
+import DotPortrait from '../components/DotPortrait';
 import Magnetic from '../components/Magnetic';
 import profile from '../data/profile';
-import { DATASETS, ARCHITECTURE_LIMITS, countParameters } from '../three/mlp';
 import '../styles/hero.css';
 
-// The WebGL bundle is large and nothing above it depends on it, so it loads
-// after the copy has painted.
-const LiveNetwork = lazy(() => import('../three/LiveNetwork'));
+/** True while the viewport is narrow. Drives the framing swap below. */
+function useNarrow(query = '(max-width: 900px)') {
+  const [narrow, setNarrow] = useState(false);
 
-const DATASET_KEYS = Object.keys(DATASETS);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const sync = () => setNarrow(media.matches);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, [query]);
+
+  return narrow;
+}
 
 export default function Hero() {
   const reduce = useReducedMotion();
-  const [dataset, setDataset] = useState('circles');
-  const [hidden, setHidden] = useState([4]);
-  const [annotate, setAnnotate] = useState('nodes');
-  const [resetKey, setResetKey] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const [stats, setStats] = useState({ epoch: 0, loss: 0, accuracy: 0 });
-  const [history, setHistory] = useState([]);
-
-  const { minHiddenLayers, maxHiddenLayers, minUnits, maxUnits } = ARCHITECTURE_LIMITS;
-  const sizes = [2, ...hidden, 1];
-  const parameters = countParameters(sizes);
-  const nodeCount = sizes.reduce((sum, size) => sum + size, 0);
-  const edgeCount = sizes.slice(1).reduce((sum, size, i) => sum + size * sizes[i], 0);
-
-  // Annotations only fit on a small network. Say so rather than letting the
-  // labels pile into an unreadable heap.
-  const annotationHidden =
-    (annotate === 'nodes' && nodeCount > 18) || (annotate === 'weights' && edgeCount > 22);
-
-  const addLayer = () =>
-    setHidden((layers) =>
-      layers.length >= maxHiddenLayers ? layers : [...layers, layers.at(-1) ?? 6]
-    );
-
-  const removeLayer = () =>
-    setHidden((layers) => (layers.length <= minHiddenLayers ? layers : layers.slice(0, -1)));
-
-  const changeUnits = (index, delta) =>
-    setHidden((layers) =>
-      layers.map((units, i) =>
-        i === index ? Math.min(maxUnits, Math.max(minUnits, units + delta)) : units
-      )
-    );
-
-  // Called from inside the render loop, so it must not change identity.
-  const onStats = useCallback((next) => {
-    setStats(next);
-    setHistory((values) => [...values.slice(-59), next.loss]);
-  }, []);
-
-  // Reset the curve whenever the run restarts.
-  useEffect(() => setHistory([]), [dataset, resetKey, hidden.length]);
-
-  // Loss is unbounded above, so the curve is scaled to its own run.
-  const curve = (() => {
-    if (history.length < 2) return '';
-    const peak = Math.max(...history, 0.12);
-    return history
-      .map((value, i) => {
-        const x = (i / (history.length - 1)) * 100;
-        const y = 26 - Math.min(value / peak, 1) * 24;
-        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
-      })
-      .join(' ');
-  })();
+  const narrow = useNarrow();
 
   const line = (index) => ({
     initial: reduce ? false : { y: '110%' },
@@ -85,10 +34,51 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top">
-      <div className="hero__glow" aria-hidden="true" />
+      {/*
+       * The hole is pushed off centre so the busy half and the reading half
+       * never overlap, and the scrim darkens only the edge the copy sits on —
+       * a flat overlay would grey the halo along with it. On a phone there is
+       * no room to stand them side by side, so the whole arrangement turns
+       * through 90°: copy at the top, hole low and whole.
+       */}
+      <div className="hero__sky" aria-hidden="true">
+        <BlackHole
+          focus={narrow ? [0.5, 0.74] : [0.72, 0.46]}
+          scrim={narrow ? 'top' : 'left'}
+          scrimStrength={0.92}
+          distance={24}
+          elevation={narrow ? -7 : -5.5}
+          fov={narrow ? 58 : 42}
+          glow={narrow ? 0.85 : 1}
+          /*
+           * Cost is steps × pixels, and the hero canvas is the whole viewport.
+           * Steps buy the deep images hugging the shadow, which are already
+           * faint; resolution buys edges, and the frame average puts most of
+           * those back. So both come down, and the retina cap comes down with
+           * them — at dpr 3 this was rendering nine times the pixels the
+           * screen can show.
+           */
+          steps={narrow ? 130 : 190}
+          resolution={narrow ? 0.5 : 0.58}
+          maxDpr={1.25}
+        />
+      </div>
 
       <div className="hero__inner shell">
         <div className="hero__body">
+          {/* The face, resolved out of a dot grid so it sits in the page's own
+              idiom rather than dropping a photograph into it. No caption: the
+              nav already carries the name, and the line under it carries the
+              role. */}
+          <motion.div
+            className="hero__sign"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.05 }}
+          >
+            <DotPortrait size={228} caption="" />
+          </motion.div>
+
           <motion.p
             className="eyebrow"
             initial={reduce ? false : { opacity: 0 }}
@@ -138,162 +128,6 @@ export default function Hero() {
             </Magnetic>
           </motion.div>
         </div>
-
-        <motion.div
-          className="lab-panel"
-          initial={reduce ? false : { opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="lab-panel__bar">
-            <p className="lab-panel__title">
-              {[2, ...hidden, 1].join(' - ')} network, {parameters} parameters
-            </p>
-            <div className="lab-panel__sets">
-              <label className="lab-panel__annotate">
-                <span>Fit</span>
-                <select value={dataset} onChange={(event) => setDataset(event.target.value)}>
-                  {DATASET_KEYS.map((key) => (
-                    <option key={key} value={key}>
-                      {DATASETS[key].label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button
-                type="button"
-                className="chip chip--icon"
-                onClick={() => setResetKey((value) => value + 1)}
-                aria-label="Reinitialise the weights and train again"
-              >
-                <ArrowsClockwise size={14} weight="bold" />
-              </button>
-            </div>
-          </div>
-
-          <div className="lab-panel__stage">
-            <div className="lab-panel__canvas">
-            <Suspense
-              fallback={
-                <div className="lab-panel__loading">
-                  <span>Initialising weights</span>
-                  <div className="lab__bar" />
-                </div>
-              }
-            >
-              <LiveNetwork
-                dataset={dataset}
-                hidden={hidden}
-                annotate={annotate}
-                resetKey={resetKey}
-                zoom={zoom}
-                onStats={onStats}
-              />
-            </Suspense>
-            </div>
-          </div>
-
-          <div className="lab-panel__arch">
-            <span className="lab-panel__archlabel">Hidden layers</span>
-
-            <div className="lab-panel__layers">
-              {hidden.map((units, index) => (
-                // Layers have no identity beyond their position, so the index
-                // is the only key available here.
-                <span className="unit" key={index}>
-                  <button
-                    type="button"
-                    onClick={() => changeUnits(index, -1)}
-                    disabled={units <= minUnits}
-                    aria-label={`Remove a neuron from hidden layer ${index + 1}`}
-                  >
-                    <Minus size={11} weight="bold" />
-                  </button>
-                  <b>{units}</b>
-                  <button
-                    type="button"
-                    onClick={() => changeUnits(index, 1)}
-                    disabled={units >= maxUnits}
-                    aria-label={`Add a neuron to hidden layer ${index + 1}`}
-                  >
-                    <Plus size={11} weight="bold" />
-                  </button>
-                </span>
-              ))}
-              {hidden.length === 0 && <span className="unit unit--empty">none</span>}
-            </div>
-
-            <label className="lab-panel__annotate">
-              <span>Show</span>
-              <select value={annotate} onChange={(event) => setAnnotate(event.target.value)}>
-                <option value="off">Nothing</option>
-                <option value="nodes">Neuron labels</option>
-                <option value="weights">Weight values</option>
-              </select>
-            </label>
-
-            <label className="lab-panel__zoom">
-              <MagnifyingGlass size={13} weight="bold" />
-              <span className="visually-hidden">Model size</span>
-              <input
-                type="range"
-                min="0.55"
-                max="1.8"
-                step="0.05"
-                value={zoom}
-                onChange={(event) => setZoom(Number(event.target.value))}
-              />
-              <b>{zoom.toFixed(2)}x</b>
-            </label>
-
-            <div className="lab-panel__depth">
-              <button
-                type="button"
-                className="chip"
-                onClick={removeLayer}
-                disabled={hidden.length <= minHiddenLayers}
-              >
-                <Minus size={11} weight="bold" /> Layer
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={addLayer}
-                disabled={hidden.length >= maxHiddenLayers}
-              >
-                <Plus size={11} weight="bold" /> Layer
-              </button>
-            </div>
-          </div>
-
-          {annotationHidden && (
-            <p className="lab-panel__hint">
-              Too many {annotate === 'weights' ? 'connections' : 'neurons'} to label. Drop a layer
-              or shrink one to read them.
-            </p>
-          )}
-
-          <dl className="lab-panel__readout">
-            <div>
-              <dt>Step</dt>
-              <dd>{stats.epoch.toLocaleString()}</dd>
-            </div>
-            <div className="lab-panel__loss">
-              <dt>Loss</dt>
-              <dd>{stats.loss.toFixed(3)}</dd>
-              {curve && (
-                <svg className="spark" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true">
-                  <path d={curve} fill="none" stroke="var(--accent)" strokeWidth="1.4"
-                    vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </div>
-            <div>
-              <dt>Batch accuracy</dt>
-              <dd>{Math.round(stats.accuracy * 100)}%</dd>
-            </div>
-          </dl>
-        </motion.div>
       </div>
     </section>
   );

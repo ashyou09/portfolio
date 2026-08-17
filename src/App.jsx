@@ -6,7 +6,7 @@ import StackMarquee from './sections/StackMarquee';
 import About from './sections/About';
 import Experience from './sections/Experience';
 import Work from './sections/Work';
-import Transformer from './sections/Transformer';
+import Network from './sections/Network';
 import Lab from './sections/Lab';
 import Certifications from './sections/Certifications';
 import Contact from './sections/Contact';
@@ -26,7 +26,7 @@ export default function App() {
         <About />
         <Experience />
         <Work />
-        <Transformer />
+        <Network />
         <Lab />
         <Certifications />
         <Contact />
