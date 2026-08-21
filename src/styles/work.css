@@ -267,6 +267,26 @@
   border-bottom: 1px solid var(--line);
 }
 
+/* Stand-in for projects with no product screenshot. Same box as the image so
+   the rail keeps one rhythm. */
+.more__tile {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(120% 90% at 25% 0%, var(--accent-dim), transparent 62%),
+    var(--bg-2);
+}
+
+.more__tile span {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
 .more__body {
   padding: 1.1rem 1.2rem 1.3rem;
 }

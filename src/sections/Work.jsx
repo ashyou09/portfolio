@@ -153,7 +153,15 @@ function MoreWork() {
             <ul className="more__rail">
               {more.map((project) => (
                 <li className="more__item" key={project.id}>
-                  <img src={project.image} alt="" loading="lazy" width="680" height="383" />
+                  {/* Not every repo has a product screenshot. Fall back to a
+                      typographic tile rather than a broken image. */}
+                  {project.image ? (
+                    <img src={project.image} alt="" loading="lazy" width="680" height="383" />
+                  ) : (
+                    <div className="more__tile" aria-hidden="true">
+                      <span className="mono">{project.tile ?? project.stack[0]}</span>
+                    </div>
+                  )}
                   <div className="more__body">
                     <h4>{project.title}</h4>
                     <p>{project.blurb}</p>

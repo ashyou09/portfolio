@@ -64,6 +64,28 @@ export const featured = [
 
 export const more = [
   {
+    id: 'research-assistant',
+    title: 'AI Research Assistant',
+    blurb:
+      'Real-time web and academic search synthesised by an LLM and exported as a formatted PDF. Search runs through an MCP tool server, models fail over OpenRouter to Groq, and results stream to the browser over SSE.',
+    stack: ['FastAPI', 'MCP', 'Groq', 'SSE'],
+    image: null,
+    tile: 'MCP / FastAPI',
+    github: 'https://github.com/ashyou09/ai-intern-final-ashutosh-singh',
+    live: 'https://ai-intern-final-ashutosh-singh.vercel.app/',
+  },
+  {
+    id: 'hybrid-rl-llm',
+    title: 'Hybrid RL-LLM Explorer',
+    blurb:
+      'An agent survives a lava grid by pairing greedy RL exploration with LLM semantic generalisation. Coordinates are deliberately dropped from the learning log, so it learns that red lava is bad rather than that tile (3,4) is bad.',
+    stack: ['MiniGrid', 'Streamlit', 'RL', 'LLM'],
+    image: null,
+    tile: 'RL / LLM',
+    github: 'https://github.com/ashyou09/Hybrid_RL_LLM_Explorer',
+    live: 'https://huggingface.co/spaces/ashyou09/hybrid-rl-llm-explorer',
+  },
+  {
     id: 'bookscan',
     title: 'BookScan',
     blurb:

@@ -17,7 +17,7 @@ const profile = {
   // About section
   about: [
     'I work where reinforcement learning and large language models meet. Most of what I build is agentic: multi-node LangGraph pipelines, retrieval and tool-use workflows, and classical ML models doing the parts that do not need a transformer.',
-    'Alongside that I ship product. Two internships in React Native and Node.js taught me the unglamorous half of engineering, containers, auth, image pipelines and talking to clients about scope.',
+    'Alongside that I ship product. Two internships taught me the unglamorous half of engineering, containers, auth, image pipelines and talking to clients about scope.',
   ],
 
   education: {

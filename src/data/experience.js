@@ -7,18 +7,19 @@ const experience = [
   {
     id: 'swot',
     company: 'SWOT Automations',
-    role: 'AI & Mobile Development Intern',
+    role: 'AI Intern',
     period: 'Jun 2026 - Present',
     mode: 'Ongoing',
     summary:
-      'Split between React Native product work and a 3D visualisation track, with client-facing scope conversations on the side.',
+      'Applied AI work across agentic workflows and a 3D visualisation track, with client-facing scope conversations on the side.',
     highlights: [
-      'Built and shipped mobile features in React Native across the 4Paws marketplace apps, including a vendor-side build.',
-      'Took the 3D visualisation track: modelled and rendered interactive scenes in Three.js, using Claude to move from geometry sketches to running code.',
+      'Build agentic AI workflows on Claude and the Model Context Protocol, wiring tool use and retrieval into pipelines that run against real product data.',
+      'Own the 3D visualisation track: modelled and rendered interactive scenes in Three.js, using Claude to move from geometry sketches to running code.',
       'Worked through the full Claude curriculum alongside the build, which is where the four Anthropic certifications in Agent Skills, Claude Coding, API Integration and MCP came from.',
       'Sat in on client calls, translated loose requirements into scoped tickets, and learned how delivery timelines actually get negotiated.',
+      'Contributed React Native features to the 4Paws marketplace apps, including a vendor-side build, when the product team needed the hands.',
     ],
-    stack: ['React Native', 'Three.js', 'Claude', 'MCP', 'Node.js'],
+    stack: ['Python', 'Claude', 'MCP', 'Three.js', 'React Native'],
   },
   {
     id: 'mentorship',
