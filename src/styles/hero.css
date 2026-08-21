@@ -21,6 +21,54 @@
   pointer-events: none;
 }
 
+/* The station rides in its own canvas over the hole. It is boxed into the half
+   of the hero the copy never uses, so it can be bright without competing with
+   the headline. Sized in viewport units because it has to hold its relationship
+   to the hole, which is also placed proportionally. */
+.hero__ship {
+  position: absolute;
+  z-index: 1;
+  top: 6%;
+  right: 1.5%;
+  width: min(36vw, 500px);
+  height: min(42vh, 420px);
+  pointer-events: none;
+  opacity: 0;
+  animation: ship-in 1.6s var(--ease) 0.5s forwards;
+}
+
+.hero__ship-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@keyframes ship-in {
+  from {
+    opacity: 0;
+    transform: translate3d(18px, 10px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Below this the hole is centred and low, the copy takes the top, and there is
+   no third place to put a station. It also spares phones a second WebGL
+   context on top of the raymarcher. */
+@media (max-width: 900px) {
+  .hero__ship {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__ship {
+    opacity: 1;
+    animation: none;
+  }
+}
+
 /* The page proper starts below the hero, on the page background rather than
    the scene's black. This is the seam. */
 .hero::after {

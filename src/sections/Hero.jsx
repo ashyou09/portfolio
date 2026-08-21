@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowDownRight, FileText } from '@phosphor-icons/react';
 import BlackHole from '../components/BlackHole';
+import SceneBoundary from '../components/SceneBoundary';
 import DotPortrait from '../components/DotPortrait';
 import Magnetic from '../components/Magnetic';
 import profile from '../data/profile';
 import '../styles/hero.css';
+
+/* Deferred so the model and the glTF loader stay out of the first paint the
+   headline needs. */
+const SpaceStation = lazy(() => import('../three/SpaceStation'));
 
 /** True while the viewport is narrow. Drives the framing swap below. */
 function useNarrow(query = '(max-width: 900px)') {
@@ -63,6 +68,24 @@ export default function Hero() {
           maxDpr={1.25}
         />
       </div>
+
+      {/*
+       * Held back on narrow screens by both the guard here and the stylesheet:
+       * the guard is what actually prevents a second WebGL context being
+       * created, the media query only hides the box.
+       *
+       * If the model or the context fails, this collapses to nothing. The hero
+       * has to survive without it.
+       */}
+      {!narrow && (
+        <div className="hero__ship" aria-hidden="true">
+          <SceneBoundary fallback={null}>
+            <Suspense fallback={null}>
+              <SpaceStation />
+            </Suspense>
+          </SceneBoundary>
+        </div>
+      )}
 
       <div className="hero__inner shell">
         <div className="hero__body">

@@ -5,7 +5,9 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  // public/draco holds the vendored Draco decoder shipped with three; it is
+  // third-party build output, not source.
+  { ignores: ['dist', 'public/draco'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
